@@ -107,7 +107,7 @@
                 query += " LIMIT " + (pageid - 1) + "," + total;    
                 rs = statement.executeQuery(query);
                 
-                String author_query = "SELECT author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id";
+                String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id";
                 PreparedStatement author_statement = c.prepareStatement(author_query);
                             
 
@@ -121,12 +121,13 @@
                     String b_title = rs.getString("title");
                     String b_year = rs.getString("year_published");
                     String b_publisher = rs.getString("publisher");
-                    out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td>" + b_title + "</td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
+                    out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td><a href = moviepage.jsp?b_isbn="+ b_isbn + ">" + b_title + "</a></td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
                     while (author_rs.next())
                     {
+                    	String a_author_id = author_rs.getString("author_id");
                     	String a_firstName = author_rs.getString("first_name");
                     	String a_lastName = author_rs.getString("last_name");
-                    	out.println(a_firstName + " " + a_lastName);
+                    	out.println("<a href = main.jsp?author_id=" + a_author_id + ">" + a_firstName + " " + a_lastName + "</a>");
                     	if(!author_rs.isLast())
                     	{
                     		//out.println(", ");
