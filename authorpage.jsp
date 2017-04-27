@@ -48,7 +48,7 @@
                             {
                                 String book_title = books_rs.getString("title");
                                 String isbn = books_rs.getString("isbn");
-                                out.println("<a href = moviepage.jsp?b_isbn=" + isbn + ">" + book_title + "</a>");
+                                out.println("<a href = moviepage.jsp?b_isbn=" + isbn + ">" + book_title + "</a><br>");
                             }
                             out.print("</li>");
 

@@ -16,7 +16,7 @@
     <div class="container">
         <div>
 			<p>
-            	<a href="booklist.jsp?page=1&orderby=title&reverse=false&page=1&letter=all">
+            	<a href="booklist.jsp?page=1&orderby=title&reverse=false&page=1&letter=all&total=10">
             		List of all books
             	</a>
            	</p>
@@ -49,7 +49,7 @@
                     <ul class="pagination">
                         <%
                         	for (char i= 'A'; i <= 'Z'; i++)
-                        		out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=1&orderby=title&reverse=false&letter=" + i + "\">" + i + "</a></li>"); 
+                        		out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=1&orderby=title&reverse=false&ltotal=10&letter=" + i + "\">" + i + "</a></li>"); 
     					%>
                     </ul>                
                 </div>
