@@ -8,6 +8,7 @@
 %>
 
 <html>
+<%@include file="navbar.jsp"%>
 <%@include file="css.html"%>  
   <body>
     <div class="container">
