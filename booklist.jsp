@@ -45,23 +45,18 @@
 
                 // Order by chevrons
                 out.println("<table class=\"bordered\">");
-                out.println("<thead><tr><th>ISBN<a href=\"booklist.jsp?page=1&orderby=isbn&reverse=false&letter=" + request.getParameter("letter") +
-                	"\"><i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=isbn&reverse=true&letter=" +
-                	request.getParameter("letter") +
-                	"\"><i class=\"material-icons\">keyboard_arrow_up</i></th></a><th>Title<a href=\"booklist.jsp?page=1&orderby=title&reverse=false&letter="
-                	+ request.getParameter("letter") +
-                	"\"><i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=title&reverse=true&letter=" +
-                	request.getParameter("letter") +
-                	"\"><i class=\"material-icons\">keyboard_arrow_up</i></th></a><th>Publisher<a href=\"booklist.jsp?page=1&orderby=publisher&reverse=false&letter=" +
-                	request.getParameter("letter") +
-                	"\"><i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=publisher&reverse=true&letter=" +
-                	request.getParameter("letter") +
-                	"\"><i class=\"material-icons\">keyboard_arrow_up</i></th></a><th>Year<a href=\"booklist.jsp?page=1&orderby=year_published&reverse=false&letter=" +
-                	request.getParameter("letter") +
-                	"\"><i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=year_published&reverse=true&letter=" +
-                	request.getParameter("letter") +
-                	"\"><i class=\"material-icons\">keyboard_arrow_up</i></th></a>" + 
-                	request.getParameter("letter") +
+                out.println("<thead><tr><th style=\"width:100px\">ISBN<a href=\"booklist.jsp?page=1&orderby=isbn&reverse=false&letter=" + request.getParameter("letter") + "\">" +
+            		"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=isbn&reverse=true&letter=" + request.getParameter("letter") + "\">" +
+                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" + 
+                	"<th>Title<a href=\"booklist.jsp?page=1&orderby=title&reverse=false&letter=" + request.getParameter("letter") + "\">" +
+            		"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=title&reverse=true&letter=" + request.getParameter("letter") + "\">" +
+                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
+            		"<th style=\"width:200px\">Publisher<a href=\"booklist.jsp?page=1&orderby=publisher&reverse=false&letter=" + request.getParameter("letter") +"\">" +
+                	"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=publisher&reverse=true&letter=" + request.getParameter("letter") +"\">" +
+                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
+                	"<th style=\"width:100px\">Year<a href=\"booklist.jsp?page=1&orderby=year_published&reverse=false&letter=" + request.getParameter("letter") +"\">" +
+                	"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=year_published&reverse=true&letter=" + request.getParameter("letter") +"\">" +
+                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" + request.getParameter("letter") + "\">" +
                 	"<th>Author</th></tr></thead>");
 
                 // Calculate tablesize for pagination
@@ -103,11 +98,11 @@
                 ResultSet rsCount;
                 int queryCount = 0;
                 countQuery = query.replace("*", "COUNT(*) AS total");
-                out.println(countQuery);
+                //out.println(countQuery);
                 rsCount = statement.executeQuery(countQuery);
                 if(rsCount.next()){
                     queryCount = rsCount.getInt("total");
-                    out.println(queryCount);
+                    //out.println(queryCount);
                 }
                 query += " LIMIT " + (pageid - 1) + "," + total;    
                 rs = statement.executeQuery(query);
