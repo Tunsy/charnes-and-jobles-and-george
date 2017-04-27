@@ -14,9 +14,6 @@
 %>
 <%@include file="navbar.jsp"%>  
     <div class="container">
-        <h1 align="center">
-        	Charnes & Jobles & George
-        </h1>
         <div>
 			<p>
             	<a href="booklist.jsp?page=1&orderby=title&reverse=false&page=1&letter=all">
@@ -27,7 +24,7 @@
 		<div>
             <nav class="navcontainer">
                 <div class="nav-wrapper bluenav">
-                    <form action="search.jsp">
+                    <form action="search.jsp" class="search-container">
                         <div class="input-field">
 							<input id="search" type="search" name="search" required>
 							<label class="label-icon" for="search">
@@ -46,13 +43,15 @@
                 </div>
             </nav>
             <br>
-            <div style="width:1800px" class="row">
-                <div class="col s3 guided-search">
-                    <h5>Browse books by title</h5>
-                    <%
-                    	for (char i= 'A'; i <= 'Z'; i++)
-                    		out.println("<a href=\"booklist.jsp?page=1&orderby=title&reverse=false&letter=" + i + "\">" + i + "</a>"); 
-					%>                
+            <div class="row">
+                <div class="guided-search alphabet">
+                    <h5 align="center">Browse books by title</h5>
+                    <ul class="pagination">
+                        <%
+                        	for (char i= 'A'; i <= 'Z'; i++)
+                        		out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=1&orderby=title&reverse=false&letter=" + i + "\">" + i + "</a></li>"); 
+    					%>
+                    </ul>                
                 </div>
             </div>
     </div>
