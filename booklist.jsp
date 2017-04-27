@@ -46,7 +46,7 @@
                 	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
                 	"<th style=\"width:100px\">Year<a href=\"booklist.jsp?page=1&orderby=year_published&reverse=false&letter=" + request.getParameter("letter") +"\">" +
                 	"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=year_published&reverse=true&letter=" + request.getParameter("letter") +"\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" + request.getParameter("letter") + "\">" +
+                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
                 	"<th>Author</th></tr></thead>");
 
                 // Calculate tablesize for pagination
@@ -125,7 +125,7 @@
                     	
                     }
                     
-            	    out.println("</td> + </tr>");
+            	    out.println("</td></tr>");
                     
                 }
                 out.println("</TABLE>");
