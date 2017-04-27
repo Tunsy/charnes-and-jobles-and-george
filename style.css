@@ -1,0 +1,35 @@
+.msg {
+    width:50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bluenav {
+    background-color: #2196f3;
+    border-radius: 25px;
+}
+
+.guided-search {    
+    margin-top: 75px;
+}
+
+nav {
+    background-color: white;
+    box-shadow: none;    
+}
+
+.nav-wrapper {
+	background-color: #2196f3;
+}
+
+.vertical-align-middle { 
+    vertical-align: middle; 
+}
+
+.padding-bottom-3 {
+    padding-bottom: 3px;
+}
+
+.row {
+  display: flex; /* equal height of the children */
+}
