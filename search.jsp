@@ -4,16 +4,7 @@
  javax.servlet.http.*,
  javax.servlet.*"
 %>
-	<head>
-	    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?page=1&orderby=title&reverse=false&family=Material+Icons">
-	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
-	    <link href="style.css" rel="stylesheet">
-	    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>           
-	    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>  
-
-	    <!--Let browser know website is optimized for mobile-->
-	    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	</head>
+<%@include file="css.html"%>
 
 <%@include file="navbar.jsp"%>
 
