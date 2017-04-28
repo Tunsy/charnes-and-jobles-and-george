@@ -35,30 +35,30 @@
 
                 // Order by chevrons
                 out.println("<table class=\"bordered\">");
-                out.println("<thead><tr><th style=\"width:100px\">ISBN<a href=\"booklist.jsp?page=1&orderby=isbn&reverse=false&letter=" + request.getParameter("letter") + "\">" +
-            		"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=isbn&reverse=true&letter=" + request.getParameter("letter") + "\">" +
+                out.println("<thead><tr><th style=\"width:100px\">ISBN<a href=\"booklist.jsp?page=1&orderby=isbn&reverse=false&total=10&letter=" + request.getParameter("letter") + "\">" +
+            		"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=isbn&reverse=true&total=10&letter=" + request.getParameter("letter") + "\">" +
                 	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" + 
-                	"<th>Title<a href=\"booklist.jsp?page=1&orderby=title&reverse=false&letter=" + request.getParameter("letter") + "\">" +
-            		"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=title&reverse=true&letter=" + request.getParameter("letter") + "\">" +
+                	"<th>Title<a href=\"booklist.jsp?page=1&orderby=title&reverse=false&total=10&letter=" + request.getParameter("letter") + "\">" +
+            		"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=title&reverse=true&total=10&letter=" + request.getParameter("letter") + "\">" +
                 	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
-            		"<th style=\"width:200px\">Publisher<a href=\"booklist.jsp?page=1&orderby=publisher&reverse=false&letter=" + request.getParameter("letter") +"\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=publisher&reverse=true&letter=" + request.getParameter("letter") +"\">" +
+            		"<th style=\"width:200px\">Publisher<a href=\"booklist.jsp?page=1&orderby=publisher&reverse=false&total=10&letter=" + request.getParameter("letter") +"\">" +
+                	"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=publisher&reverse=true&total=10&letter=" + request.getParameter("letter") +"\">" +
                 	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
-                	"<th style=\"width:100px\">Year<a href=\"booklist.jsp?page=1&orderby=year_published&reverse=false&letter=" + request.getParameter("letter") +"\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=year_published&reverse=true&letter=" + request.getParameter("letter") +"\">" +
+                	"<th style=\"width:100px\">Year<a href=\"booklist.jsp?page=1&orderby=year_published&reverse=false&total=10&letter=" + request.getParameter("letter") +"\">" +
+                	"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=year_published&reverse=true&total=10&letter=" + request.getParameter("letter") +"\">" +
                 	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
                 	"<th>Author</th>" + "<th>Genre</th></tr></thead>");
 
                 // Calculate tablesize for pagination
-                String spageid=request.getParameter("page");  
-                int pageid=Integer.parseInt(spageid);  
+                String spageid = request.getParameter("page");  
+                int pageid = Integer.parseInt(spageid);  
                 int currentPage;
-                int total=15;  
-                if(pageid!=1){
-                    pageid=pageid-1;  
-                    pageid=pageid*total+1;  
+                int total = Integer.parseInt(request.getParameter("total"));  
+                if(pageid != 1){
+                    pageid = pageid-1;  
+                    pageid = pageid*total+1;  
                 }  
-                currentPage = (pageid/15)+1;
+                currentPage = (pageid/total)+1;
                 
                 String orderby = request.getParameter("orderby");
                 String query;
@@ -159,6 +159,13 @@
                		out.print("</td></tr>");
                 }
                 out.println("</TABLE>");
+
+                //Limit data
+                out.println("Limit books per page: ");
+                out.println("<a href=\"booklist.jsp?page=" + (currentPage) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=5" + "&letter=" + request.getParameter("letter") + "\">5</a>");
+                out.println("<a href=\"booklist.jsp?page=" + (currentPage) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=15" + "&letter=" + request.getParameter("letter") + "\">15</a>");
+                out.println("<a href=\"booklist.jsp?page=" + (currentPage) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=25" + "&letter=" + request.getParameter("letter") + "\">25</a>");
+                out.println("<a href=\"booklist.jsp?page=" + (currentPage) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=50" + "&letter=" + request.getParameter("letter") + "\">50</a>");
                 
                 // Pagination
                 // Disable previous button while on first page
@@ -166,13 +173,13 @@
                 if(currentPage <= 1){
                     out.println("<li class=\"disabled\"><i class=\"material-icons\">chevron_left</i> Prev </li>");
                 }else{
-                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=" + (currentPage-1) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&letter=" + request.getParameter("letter") + "\"><i class=\"material-icons\">chevron_left</i> Prev </a></li>");
+                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=" + (currentPage-1) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=" + request.getParameter("total") + "&letter=" + request.getParameter("letter") + "\"><i class=\"material-icons\">chevron_left</i> Prev </a></li>");
                 }
                 // Disable next button while on last page
-                if(currentPage >= Math.ceil(queryCount/15)){
+                if(currentPage >= Math.ceil(queryCount/total)){
                     out.println("<li class=\"disabled\"> Next <i class=\"material-icons\">chevron_right</i></li>");
                 }else{
-                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=" + (currentPage+1) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&letter=" + request.getParameter("letter") + "\">Next <i class=\"material-icons\">chevron_right</i></a></li></ul>");
+                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=" + (currentPage+1) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=" + request.getParameter("total") + "&letter=" + request.getParameter("letter") + "\">Next <i class=\"material-icons\">chevron_right</i></a></li></ul>");
                 }
                 
 
