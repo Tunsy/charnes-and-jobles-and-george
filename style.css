@@ -4,6 +4,16 @@
     margin-right: auto;
 }
 
+.advancedsearch {
+	margin-left:20%;
+	margin-top:-50px;
+}
+
+.advancedsearch > a{
+	color: #2196f3;
+}
+
+
 .bluenav {
     background-color: #2196f3;
     border-radius: 25px;
@@ -45,4 +55,17 @@ nav {
 
 .row {
   display: flex; /* equal height of the children */
+}
+
+::-webkit-input-placeholder {
+   font-style: italic;
+}
+:-moz-placeholder {
+   font-style: italic;  
+}
+::-moz-placeholder {
+   font-style: italic;  
+}
+:-ms-input-placeholder {  
+   font-style: italic; 
 }

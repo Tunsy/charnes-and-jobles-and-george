@@ -39,6 +39,9 @@
                         <button class="btn waves-effect waves-light" type="submit">
                         	Search
                         </button>
+						<div class="advancedsearch">
+		                	<a href="advancedsearch.jsp" font="black">Advanced Search</a>
+						</div>
                     </form>
                 </div>
             </nav>
