@@ -19,17 +19,30 @@
     border-radius: 25px;
 }
 
-.guided-search {    
-    margin-top: 75px;
-}
-
 nav {
     background-color: white;
     box-shadow: none;    
 }
 
 .nav-wrapper {
-	background-color: #2196f3;
+    background-color: #2196f3;
+}
+
+.brand-logo{
+    margin-left: 40px;
+}
+
+.guided-search {    
+    margin-top: 75px;
+}
+
+.search-container{
+    margin-top: 100px;
+}
+
+.alphabet{
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .vertical-align-middle { 
