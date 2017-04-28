@@ -23,18 +23,16 @@
                             session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
                         response.setContentType("text/html");               
                         Class.forName("com.mysql.jdbc.Driver").newInstance();
-                        Statement statement = c.createStatement();
-
 
                         String isbn = request.getParameter("b_isbn");
                         //String isbn = "1";
-                        List<String> authors = new ArrayList<String>();
-                        String query = "SELECT * FROM book LEFT JOIN (author, authored, genre_in_books, genre) ON (book.isbn = authored.isbn AND authored.isbn = genre_in_books.isbn AND authored.author_id = author.author_id AND genre.id = genre_in_books.genre_id) WHERE book.isbn = " + isbn;
-                        ResultSet rs = statement.executeQuery(query);
+                        String query = "SELECT * FROM book LEFT JOIN (author, authored, genre_in_books, genre) ON (book.isbn = authored.isbn AND authored.isbn = genre_in_books.isbn AND authored.author_id = author.author_id AND genre.id = genre_in_books.genre_id) WHERE book.isbn = ?";
+                        PreparedStatement statement = c.prepareStatement(query);
+                        statement.setInt(1, Integer.parseInt(isbn));
                         String year = "";
                         String title = "";
                         String publisher = "";
-                        String genre = "";
+                        ResultSet rs = statement.executeQuery();
                         
                         String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id";
                         PreparedStatement author_statement = c.prepareStatement(author_query);
@@ -42,16 +40,12 @@
                 	    ResultSet author_rs = author_statement.executeQuery();
                 	    
                 	    
-                	    String genre_query = "SELECT genre.genre_name  FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id;";
-                        PreparedStatement genre_statement = c.prepareStatement(genre_query);
-                	    genre_statement.setInt(1, Integer.parseInt(isbn));
-                	    ResultSet genre_rs = genre_statement.executeQuery();
                 	    
                         if(rs.next()){
                             year = rs.getString("year_published");
                             title = rs.getString("title");
                             publisher = rs.getString("publisher");
-                            genre = rs.getString("genre_name");
+
                             
                             out.println("<li class=\"collection-header\"><h4>" + title + "<h4></li>");
                             out.println("<li class=\"collection-item\">Author: ");
@@ -69,21 +63,31 @@
                             	}
                         	}
                             
+	                	    String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id;";
+	                        PreparedStatement genre_statement = c.prepareStatement(genre_query);
+	                	    genre_statement.setInt(1, Integer.parseInt(isbn));
+	                	    ResultSet genre_rs = genre_statement.executeQuery();
+	                	    
                             out.print("</li>");
                             out.println("<li class=\"collection-item\">Publisher: " + publisher + "</li>");
-                            
                             out.println("<li class=\"collection-item\">Genres: ");
                             
-                            while(genre_rs.next())
+                            genre_rs.last();
+							int size = genre_rs.getRow();
+								out.println(size);
+                            
+	
+                            boolean debug = true;
+                            while(genre_rs.next()) // 
                         	{
-                        		String genre_name = genre_rs.getString("genre_name");
-                        		
-                            	out.println(genre_name);
+                        		//String genre_name = genre_rs.getString("genre_name");
+                            	//out.println("hello");
                             	if(!genre_rs.isLast())
                             	{
                             		//out.println(", ");
                             		out.println("<br>");
                             	}
+                            	debug = false;
                         	}
                             
                             out.print("</li>");
