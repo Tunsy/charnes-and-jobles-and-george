@@ -55,7 +55,7 @@
                         		String a_author_id = author_rs.getString("author_id");
                         		String a_firstName = author_rs.getString("first_name");
                             	String a_lastName = author_rs.getString("last_name");
-                            	out.println("<a href = main.jsp?author_id=" + a_author_id + ">" + a_firstName + " " + a_lastName + "</a>");
+                            	out.println("<a href = authorpage.jsp?author_id=" + a_author_id + ">" + a_firstName + " " + a_lastName + "</a>");
                             	if(!author_rs.isLast())
                             	{
                             		out.println("<br>");

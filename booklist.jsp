@@ -47,7 +47,7 @@
                 	"<th style=\"width:100px\">Year<a href=\"booklist.jsp?page=1&orderby=year_published&reverse=false&letter=" + request.getParameter("letter") +"\">" +
                 	"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=year_published&reverse=true&letter=" + request.getParameter("letter") +"\">" +
                 	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
-                	"<th>Author</th></tr></thead>");
+                	"<th>Author</th>" + "<th>Genre</th></tr></thead>");
 
                 // Calculate tablesize for pagination
                 String spageid=request.getParameter("page");  
@@ -99,7 +99,10 @@
                 
                 String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id";
                 PreparedStatement author_statement = c.prepareStatement(author_query);
-                            
+                
+                String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id;";
+                PreparedStatement genre_statement = c.prepareStatement(genre_query);
+        	    
 
                 // Iterate through each row of rs
                 while (rs.next()) {
@@ -107,11 +110,19 @@
                     
                 	author_statement.setInt(1, Integer.parseInt(b_isbn));
             	    ResultSet author_rs = author_statement.executeQuery();
+            	    
+            	    genre_statement.setInt(1, Integer.parseInt(b_isbn));
+            	    ResultSet genre_rs = genre_statement.executeQuery();
                     
                     String b_title = rs.getString("title");
                     String b_year = rs.getString("year_published");
                     String b_publisher = rs.getString("publisher");
                     out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td><a href = moviepage.jsp?b_isbn="+ b_isbn + ">" + b_title + "</a></td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
+                    
+                    
+                    
+                    
+                    
                     while (author_rs.next())
                     {
                     	String a_author_id = author_rs.getString("author_id");
@@ -126,8 +137,26 @@
                     	
                     }
                     
-            	    out.println("</td></tr>");
+            	    out.println("</td>");
                     
+            	    out.println("<td>");
+            	    
+            	    if (!genre_rs.isBeforeFirst() ) {    
+        			    out.println("None listed"); 
+        				}
+        			else {
+        				out.println("<br>"); 
+                    	while(genre_rs.next()) // 
+                		{
+                    		String genre = genre_rs.getString("genre_name");
+                    		out.println(genre);
+                    		if(!genre_rs.isLast())
+                    		{
+                    			out.println("<br>");
+                    		}
+                		}
+        			}
+               		out.print("</td></tr>");
                 }
                 out.println("</TABLE>");
                 
