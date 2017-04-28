@@ -43,18 +43,22 @@
                             url = rs.getString("photo_url");
                             
                             out.println("<li class=\"collection-header\"><h4>" + name + "</h4>");
-                            out.println("<li class=\"collection-item\">Books Written: ");
+                            out.println("<li class=\"collection-item\">Books Written: <br>");
                             while(books_rs.next())
                             {
                                 String book_title = books_rs.getString("title");
                                 String isbn = books_rs.getString("isbn");
                                 out.println("<a href = moviepage.jsp?b_isbn=" + isbn + ">" + book_title + "</a>");
+                                if(!books_rs.isLast())
+                            	{
+                            		out.println("<br>");
+                            	}
                             }
                             out.print("</li>");
 
                             out.println("<li class=\"collection-item\">Author ID: " + authorid + "</li>");
                             out.println("<li class=\"collection-item\">Birthday: "+ birth + "</li>");
-                            out.println("<li class=\"collection-item\">URL: "+ url + "</li>");   
+                            out.println("<li class=\"collection-item\">Photo URL: "+ url + "</li>");   
                         }
                     } catch (SQLException ex) {
                         while (ex != null) {

@@ -48,7 +48,7 @@
 
                             
                             out.println("<li class=\"collection-header\"><h4>" + title + "<h4></li>");
-                            out.println("<li class=\"collection-item\">Author: ");
+                            out.println("<li class=\"collection-item\">Author: <br>");
                             
                         	while(author_rs.next())
                         	{
@@ -58,10 +58,11 @@
                             	out.println("<a href = main.jsp?author_id=" + a_author_id + ">" + a_firstName + " " + a_lastName + "</a>");
                             	if(!author_rs.isLast())
                             	{
-                            		//out.println(", ");
                             		out.println("<br>");
                             	}
                         	}
+                            author_rs.close();			// Finished with author
+                            author_statement.close();
                             
 	                	    String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id;";
 	                        PreparedStatement genre_statement = c.prepareStatement(genre_query);
@@ -72,24 +73,22 @@
                             out.println("<li class=\"collection-item\">Publisher: " + publisher + "</li>");
                             out.println("<li class=\"collection-item\">Genres: ");
                             
-                            genre_rs.last();
-							int size = genre_rs.getRow();
-								out.println(size);
-                            
-	
-                            boolean debug = true;
-                            while(genre_rs.next()) // 
-                        	{
-                        		//String genre_name = genre_rs.getString("genre_name");
-                            	//out.println("hello");
-                            	if(!genre_rs.isLast())
-                            	{
-                            		//out.println(", ");
-                            		out.println("<br>");
-                            	}
-                            	debug = false;
-                        	}
-                            
+
+                    		if (!genre_rs.isBeforeFirst() ) {    
+                    			    out.println("None listed"); 
+                    		}
+                    		else {
+                    			out.println("<br>"); 
+	                            while(genre_rs.next()) // 
+	                        	{
+	                            	String genre = genre_rs.getString("genre_name");
+	                            	out.println(genre);
+	                            	if(!genre_rs.isLast())
+	                            	{
+	                            		out.println("<br>");
+	                            	}
+	                        	}
+                    		}
                             out.print("</li>");
                             
                             out.println("<li class=\"collection-item\">Year published: " + year + "</li>");
