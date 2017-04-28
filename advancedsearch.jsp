@@ -43,7 +43,9 @@
 				<input placeholder="first name" style="placeholder" id="author_first_name" name="author_first_name">
 				<input placeholder="last name" style="placeholder"id="author_last_name" name="author_last_name">
 			</div>
-			
+			<button class="btn waves-effect waves-light" type="submit" name="search">
+				Search
+			</button>
 		</form>
 	</div>
 </html>

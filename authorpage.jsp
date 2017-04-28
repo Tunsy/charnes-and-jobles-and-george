@@ -9,7 +9,7 @@
 
 <html>
 <%@include file="navbar.jsp"%>
-<%@include file="css.html"%>  
+<%@include file="./css.html"%>  
   <body>
     <div class="container">
         <h1 align="center"> Charnes & Jobles & George</h1>

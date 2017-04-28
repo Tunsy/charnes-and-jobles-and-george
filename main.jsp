@@ -40,7 +40,7 @@
                         	Search
                         </button>
 						<div class="advancedsearch">
-		                	<a href="advancedsearch.jsp" font="black">Advanced Search</a>
+		                	<a href="search/advancedsearch.jsp" font="black">Advanced Search</a>
 						</div>
                     </form>
                 </div>
