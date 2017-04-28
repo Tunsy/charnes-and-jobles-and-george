@@ -118,6 +118,7 @@
                     }
                   %>                   
               </ul>
+              <a class="waves-effect waves-light btn"><i class="material-icons left">shopping_cart</i>Add to shopping cart</a>
             </div>
         </div>
       </div>

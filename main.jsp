@@ -49,7 +49,7 @@
                     <ul class="pagination">
                         <%
                         	for (char i= 'A'; i <= 'Z'; i++)
-                        		out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=1&orderby=title&reverse=false&ltotal=10&letter=" + i + "\">" + i + "</a></li>"); 
+                        		out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=1&orderby=title&reverse=false&total=10&letter=" + i + "\">" + i + "</a></li>"); 
     					%>
                     </ul>                
                 </div>
