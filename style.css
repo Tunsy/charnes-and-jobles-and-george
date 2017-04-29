@@ -36,6 +36,16 @@ nav {
     margin-top: 75px;
 }
 
+.genre-search {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.genre-button{
+    margin-bottom: 10px;
+}
+
 .search-container{
     margin-top: 100px;
 }
