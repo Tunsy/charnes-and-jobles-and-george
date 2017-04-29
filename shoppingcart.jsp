@@ -6,6 +6,8 @@
  java.lang.Math,
  java.util.*"
 %>
+<%@include file="pair.jsp"
+%>
 
 <html>
 <%@include file="css.html"%>
@@ -45,11 +47,13 @@
                 String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id;";
                 PreparedStatement genre_statement = c.prepareStatement(genre_query);
                 
-                ArrayList<String> cart = (ArrayList) session.getAttribute("shoppingcart");
+                ArrayList<ItemCounter> cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
+                
                 
                 for (int i = 0; i < cart.size(); i++) {
-                	String b_isbn = cart.get(i);                   
+                	String b_isbn = cart.get(i).isbn();                   
                     
+                	
                 	book_statement.setInt(1, Integer.parseInt(b_isbn));
             	    ResultSet rs = book_statement.executeQuery();
             	    
@@ -85,6 +89,7 @@
             	    out.println("</td>");
                     
             	    out.println("<td>");
+
             	    
             	    if (!genre_rs.isBeforeFirst() ) {    
         			    out.println("None listed"); 
@@ -101,8 +106,13 @@
                     		}
                 		}
         			}
+            	    
+            	    out.println("</td><td>$10.00</td>");
+            	    out.println("<td>" + cart.get(i).quantity + "</td>");
                 }
-               		out.print("</td><td>");
+               		 		
+               		
+               		
             } catch (SQLException ex) {
                 while (ex != null) {
                     System.out.println("SQL Exception:  " + ex.getMessage());
