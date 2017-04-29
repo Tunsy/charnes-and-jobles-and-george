@@ -12,11 +12,14 @@
 <%@include file="css.html"%>
 
 <%
-	if(request.getParameter("btn") != null) //btnSubmit is the name of your button, not id of that button.
+	String isbn = request.getParameter("isbn");
+	if(isbn != null) //btnSubmit is the name of your button, not id of that button.
 	{
-    	out.println("test");
+		out.println(request.getParameter("btn"));
+		
+    	out.println(isbn);
     	ArrayList<String> cart = (ArrayList) session.getAttribute("shoppingcart");
-    	//cart.add(isbn);
+    	cart.add(isbn);
 	}
 	else{
 		out.println("else");
