@@ -3,7 +3,8 @@
  java.io.IOException,
  javax.servlet.http.*,
  javax.servlet.*,
- java.lang.Math"
+ java.lang.Math,
+ java.util.*"
 %>
 
 <html>
@@ -103,6 +104,7 @@
                 String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id;";
                 PreparedStatement genre_statement = c.prepareStatement(genre_query);
         	    
+                String singleAddBtn = request.getParameter("btn");
 
                 // Iterate through each row of rs
                 while (rs.next()) {
@@ -118,8 +120,6 @@
                     String b_year = rs.getString("year_published");
                     String b_publisher = rs.getString("publisher");
                     out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td><a href = moviepage.jsp?b_isbn="+ b_isbn + ">" + b_title + "</a></td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
-                    
-                    
                     
                     
                     
@@ -156,9 +156,26 @@
                     		}
                 		}
         			}
-               		out.print("</td>");
-               		out.println("<td><a class=" + "waves-effect waves-light btn" + "><i class=" + "material-icons left" + ">shopping_cart</i>" + "Add" + "</a>");
-               		out.print("</td></tr>");
+               		out.print("</td><td>");
+%>            	    
+					<form action="booklist.jsp?<% out.println(request.getQueryString()); %>" method="post">
+						<input type="hidden" name="isbn" value=<% out.println(b_isbn);%> />               			
+              			<button type="submit" class="waves-effect waves-light btn" name="btn" value="default">
+              				<i class="material-icons left">
+              					shopping_cart
+              				</i>
+              				Add
+              			</button>
+              		</form>
+
+<%               		out.print("</td></tr>");
+						if(singleAddBtn != null) //btnSubmit is the name of your button, not id of that button.
+						{
+							String isbn = request.getParameter("isbn");
+							ArrayList<String> cart = (ArrayList) session.getAttribute("shoppingcart");
+							cart.add(isbn);
+							singleAddBtn = null;
+						}
                 }
                 out.println("</TABLE>");
 
