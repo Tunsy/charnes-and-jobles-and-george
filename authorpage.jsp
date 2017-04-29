@@ -33,7 +33,7 @@
                         String birth = "";
                         String url = "";
                         
-                        String book_query = "SELECT * FROM authored,book WHERE authored.isbn = book.isbn AND authored.author_id = " + authorid;
+                        String book_query = "SELECT * FROM authored,book WHERE authored.isbn = book.isbn AND authored.author_id = " + authorid + " ORDER BY book.title ASC";
                         PreparedStatement book_statement = c.prepareStatement(book_query);
                         ResultSet books_rs = book_statement.executeQuery();
                         
@@ -48,7 +48,7 @@
                             {
                                 String book_title = books_rs.getString("title");
                                 String isbn = books_rs.getString("isbn");
-                                out.println("<a href = moviepage.jsp?b_isbn=" + isbn + ">" + book_title + "</a>");
+                                out.println("<a href = bookpage.jsp?b_isbn=" + isbn + ">" + book_title + "</a>");
                                 if(!books_rs.isLast())
                             	{
                             		out.println("<br>");

@@ -1,71 +1,108 @@
 .msg {
-    width:50%;
-    margin-left: auto;
-    margin-right: auto;
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .advancedsearch {
-	margin-left:20%;
-	margin-top:-50px;
+	margin-left: 20%;
+	margin-top: -50px;
 }
 
-.advancedsearch > a{
+.advancedsearch>a {
 	color: #2196f3;
 }
 
-
 .bluenav {
-    background-color: #2196f3;
-    border-radius: 25px;
+	background-color: #2196f3;
+	border-radius: 25px;
 }
 
 nav {
-    background-color: white;
-    box-shadow: none;    
+	background-color: white;
+	box-shadow: none;
 }
 
 .nav-wrapper {
-    background-color: #2196f3;
+	background-color: #2196f3;
 }
 
-.brand-logo{
-    margin-left: 40px;
+.brand-logo {
+	margin-left: 40px;
 }
 
-.guided-search {    
-    margin-top: 75px;
+.guided-search {
+	margin-top: 75px;
 }
 
-.search-container{
-    margin-top: 100px;
+.genre-search {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
 }
 
-.alphabet{
-    margin-left: auto;
-    margin-right: auto;
+.genre-button {
+	margin-bottom: 10px;
 }
 
-.vertical-align-middle { 
-    vertical-align: middle; 
+.search-container {
+	margin-top: 100px;
+}
+
+.alphabet {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.vertical-align-middle {
+	vertical-align: middle;
 }
 
 .padding-bottom-3 {
-    padding-bottom: 3px;
+	padding-bottom: 3px;
 }
 
 .row {
-  display: flex; /* equal height of the children */
+	display: flex; /* equal height of the children */
 }
 
 ::-webkit-input-placeholder {
-   font-style: italic;
+	font-style: italic;
 }
+
 :-moz-placeholder {
-   font-style: italic;  
+	font-style: italic;
 }
+
 ::-moz-placeholder {
-   font-style: italic;  
+	font-style: italic;
 }
-:-ms-input-placeholder {  
-   font-style: italic; 
+
+:-ms-input-placeholder {
+	font-style: italic;
+}
+
+.button {
+	padding: 0px;
+	border-radius: 0px;
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	margin: 0px
+}
+
+.tiny-btn {
+	width: 10px;
+	height: 10px;
+}
+
+.btn-link {
+	border: none;
+	outline: none;
+	background: none;
+	cursor: pointer;
+	color: #2196f3;
+	padding: 0;
+	text-decoration: none;
+	font-family: inherit;
+	font-size: inherit;
 }

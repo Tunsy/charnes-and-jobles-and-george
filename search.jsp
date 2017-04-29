@@ -8,20 +8,22 @@
 
 <%@include file="navbar.jsp"%>
 
-<h1 align="center"> Charnes & Jobles & George</h1>
-
+	<h1 align="center"> Charnes & Jobles & George</h1>
+	<div class="container">
 <%
-	response.setHeader("Cache-Control","no-cache");
-	response.setHeader("Cache-Control","no-store");
-	response.setHeader("Pragma","no-cache");
-	response.setDateHeader ("Expires", 0);
-	if(session.getAttribute("email") == null){
-		session.removeAttribute("email");
-		session.invalidate();
-		response.sendRedirect("index.jsp");
-	}else{
-		String searchstring = request.getParameter("search");
-	
+		response.setHeader("Cache-Control","no-cache");
+		response.setHeader("Cache-Control","no-store");
+		response.setHeader("Pragma","no-cache");
+		response.setDateHeader ("Expires", 0);
+		if(session.getAttribute("email") == null){
+			session.removeAttribute("email");
+			session.invalidate();
+			response.sendRedirect("index.jsp");
+		}
+%>
+<%
+		String searchstring = request.getParameter("title");
+		
 
 		Connection c = DriverManager.getConnection(
             session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
@@ -48,8 +50,7 @@
 				out.println("<td>" + publisher + "</td></tr>");
 			}
 		} else {
-			out.println("<h6>No data</h6>");
-		}		
-	}
+			out.println("<div class=\"msg\">Search found 0 results.</div>");
+		}
 %>
-
+</div>
