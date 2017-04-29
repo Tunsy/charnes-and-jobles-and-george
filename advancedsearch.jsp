@@ -14,7 +14,7 @@
 		</h4>
 	</div>
 	<div class="container">
-		<form action="advancedsearch.jsp/process/">
+		<form action="search.jsp">
 			<h5 class="label-icon">
 				Title
 			</h5>
@@ -43,7 +43,7 @@
 				<input placeholder="first name" style="placeholder" id="author_first_name" name="author_first_name">
 				<input placeholder="last name" style="placeholder"id="author_last_name" name="author_last_name">
 			</div>
-			<button class="btn waves-effect waves-light" type="submit" name="search">
+			<button class="btn waves-effect waves-light" type="submit">
 				Search
 			</button>
 		</form>

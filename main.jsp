@@ -26,7 +26,7 @@
                 <div class="nav-wrapper bluenav">
                     <form action="search.jsp" class="search-container">
                         <div class="input-field">
-							<input id="search" type="search" name="search" required>
+							<input placeholder="Enter title of book" class="placeholder" id="search" type="search" name="title" required>
 							<label class="label-icon" for="search">
 								<i class="material-icons">
 									search
@@ -40,7 +40,7 @@
                         	Search
                         </button>
 						<div class="advancedsearch">
-		                	<a href="search/advancedsearch.jsp" font="black">Advanced Search</a>
+		                	<a href="advancedsearch.jsp" font="black">Advanced Search</a>
 						</div>
                     </form>
                 </div>

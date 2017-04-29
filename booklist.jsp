@@ -22,33 +22,78 @@
 %>
   
 <%@include file="navbar.jsp"%>
-  <body>
-    <div class="container">
-        <%
-            try {               
-                //Class.forName("org.gjt.mm.mysql.Driver");
-                Connection c = DriverManager.getConnection(
-                    session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
-                response.setContentType("text/html");               
-                Class.forName("com.mysql.jdbc.Driver").newInstance();
-                Statement statement = c.createStatement();
-
-                // Order by chevrons
-                out.println("<table class=\"bordered\">");
-                out.println("<thead><tr><th style=\"width:100px\">ISBN<a href=\"booklist.jsp?page=1&orderby=isbn&reverse=false&total=10&letter=" + request.getParameter("letter") + "\">" +
-            		"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=isbn&reverse=true&total=10&letter=" + request.getParameter("letter") + "\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" + 
-                	"<th>Title<a href=\"booklist.jsp?page=1&orderby=title&reverse=false&total=10&letter=" + request.getParameter("letter") + "\">" +
-            		"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=title&reverse=true&total=10&letter=" + request.getParameter("letter") + "\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
-            		"<th style=\"width:200px\">Publisher<a href=\"booklist.jsp?page=1&orderby=publisher&reverse=false&total=10&letter=" + request.getParameter("letter") +"\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=publisher&reverse=true&total=10&letter=" + request.getParameter("letter") +"\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
-                	"<th style=\"width:100px\">Year<a href=\"booklist.jsp?page=1&orderby=year_published&reverse=false&total=10&letter=" + request.getParameter("letter") +"\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=year_published&reverse=true&total=10&letter=" + request.getParameter("letter") +"\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
-                	"<th>Author</th></tr></thead>");
-
+	<body>
+		<div class="container">
+<%
+	try {               
+	//Class.forName("org.gjt.mm.mysql.Driver");
+	Connection c = DriverManager.getConnection(
+		session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
+	response.setContentType("text/html");               
+	Class.forName("com.mysql.jdbc.Driver").newInstance();
+	Statement statement = c.createStatement();
+    // Order by chevrons (arrows)
+%>
+			<table class="bordered">
+			<thead>
+				<tr>
+               		<th style="width:150px">
+               			ISBN
+               			<a href="booklist.jsp?page=1&orderby=isbn&reverse=false&total=10&letter="<%request.getParameter("letter");%>>
+            				<i class="material-icons">
+            					keyboard_arrow_down
+            				</i>
+            			</a>
+            			<a href="booklist.jsp?page=1&orderby=isbn&reverse=true&total=10&letter="<%request.getParameter("letter");%>>
+               			<i class="material-icons">
+               				keyboard_arrow_up
+               			</i>
+               		</th>
+               		</a> 
+               	<th>
+               		Title
+               		<a href="booklist.jsp?page=1&orderby=title&reverse=false&total=10&letter="<%request.getParameter("letter");%>>
+	            		<i class="material-icons">
+	            			keyboard_arrow_down
+	            		</i>
+	            	</a>
+	            	<a href="booklist.jsp?page=1&orderby=title&reverse=true&total=10&letter="<%request.getParameter("letter");%>>
+                		<i class="material-icons">
+                			keyboard_arrow_up
+                		</i>
+               		</a>
+               	</th>
+           		<th style="width:200px">
+           			Publisher
+           			<a href="booklist.jsp?page=1&orderby=publisher&reverse=false&total=10&letter="<%request.getParameter("letter");%>>
+                		<i class="material-icons">
+                			keyboard_arrow_down
+                		</i>
+               		</a>
+               		<a href=\"booklist.jsp?page=1&orderby=publisher&reverse=true&total=10&letter="<%request.getParameter("letter");%>>
+               			<i class="material-icons">
+               				keyboard_arrow_up
+               			</i>
+               		</a>
+               	</th>
+               	<th style="width:100px">
+               		Year
+               		<a href="booklist.jsp?page=1&orderby=year_published&reverse=false&total=10&letter="<%request.getParameter("letter");%>>
+               		<i class="material-icons">
+               			keyboard_arrow_down</i>
+               		</a>
+               		<a href="booklist.jsp?page=1&orderby=year_published&reverse=true&total=10&letter="<%request.getParameter("letter");%>>
+               		<i class="material-icons">
+               			keyboard_arrow_up
+               		</i>
+               		</a>
+               	</th>
+               	<th>
+               		Author
+               	</th>
+               </tr>
+		</thead>
+<%	
                 // Calculate tablesize for pagination
                 String spageid = request.getParameter("page");  
                 int pageid = Integer.parseInt(spageid);  
@@ -167,9 +212,9 @@
                 return;
             }
  
-        %>
+%>
+	
 
-
-    </div>
-  </body>
+    	</div>
+ 	</body>
 </html>
