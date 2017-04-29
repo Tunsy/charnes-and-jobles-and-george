@@ -37,7 +37,7 @@
                         String publisher = "";
                         ResultSet rs = statement.executeQuery();
                         
-                        String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id";
+                        String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id ORDER BY last_name, first_name ASC";
                         PreparedStatement author_statement = c.prepareStatement(author_query);
                         author_statement.setInt(1, Integer.parseInt(isbn));
                 	    ResultSet author_rs = author_statement.executeQuery();
@@ -51,7 +51,7 @@
 
                             
                             out.println("<li class=\"collection-header\"><h4>" + title + "<h4></li>");
-                            out.println("<li class=\"collection-item\">Author: <br>");
+                            out.println("<li class=\"collection-item\">List of authors: <br>");
                             
                         	while(author_rs.next())
                         	{
@@ -67,7 +67,7 @@
                             author_rs.close();			// Finished with author
                             author_statement.close();
                             
-	                	    String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id;";
+	                	    String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id ORDER BY genre_name ASC";
 	                        PreparedStatement genre_statement = c.prepareStatement(genre_query);
 	                	    genre_statement.setInt(1, Integer.parseInt(isbn));
 	                	    ResultSet genre_rs = genre_statement.executeQuery();

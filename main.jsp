@@ -85,7 +85,7 @@
 							Class.forName("com.mysql.jdbc.Driver").newInstance();
 							Statement statement = c.createStatement();
 							
-							String genreQuery = "SELECT genre_name FROM genre";
+							String genreQuery = "SELECT genre_name FROM genre ORDER BY genre_name ASC";
 							ResultSet genres = statement.executeQuery(genreQuery);
 							
 						%>

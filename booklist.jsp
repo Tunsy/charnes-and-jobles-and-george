@@ -290,10 +290,10 @@
 	                query += " LIMIT " + (pageid - 1) + "," + total;
 	                rs = statement.executeQuery(query);
 	                
-	                String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id";
+	                String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id ORDER BY last_name, first_name ASC";
 	                PreparedStatement author_statement = c.prepareStatement(author_query);
 	                
-	                String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id;";
+	                String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id ORDER BY genre_name ASC";
 	                PreparedStatement genre_statement = c.prepareStatement(genre_query);
 	        	    
 	                String singleAddBtn = request.getParameter("btn");
@@ -331,7 +331,7 @@
 	                    
 	            	    out.println("</td>");
 	                    
-	            	    out.println("<td>");
+	            	    out.println("<td style=\"width: 300px\">");
 	            	    
 	            	    if (!genre_rs.isBeforeFirst() ) {    
 	        			    out.println("None listed"); 
@@ -383,13 +383,13 @@
 	                String newPagePrev = "page=" + Integer.toString(currentPage-1);
 	                String newPageForward = "page=" + Integer.toString(currentPage+1);
 	                if(currentPage <= 1){
-	                    out.println("<li class=\"disabled\"><i class=\"material-icons\">chevron_left</i> Prev </li>");
+	                    out.println("<li class=\"disabled\"></li>");
 	                }else{
 	                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?" + request.getQueryString().replace(formatCurrentPage, newPagePrev) + "\"><i class=\"material-icons\">chevron_left</i> Prev </a></li>");
 	                }
 	                // Disable next button while on last page
 	                if(currentPage >= Math.ceil(queryCount/total)){
-	                    out.println("<li class=\"disabled\"> Next <i class=\"material-icons\">chevron_right</i></li>");
+	                    out.println("<li class=\"disabled\"></li>");
 	                }else{
 	                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?"  + request.getQueryString().replace(formatCurrentPage, newPageForward) +  "\">Next <i class=\"material-icons\">chevron_right</i></a></li></ul>");
 	                }
