@@ -156,6 +156,8 @@
                     		}
                 		}
         			}
+               		out.print("</td>");
+               		out.println("<td><a class=" + "waves-effect waves-light btn" + "><i class=" + "material-icons left" + ">shopping_cart</i>" + "Add" + "</a>");
                		out.print("</td></tr>");
                 }
                 out.println("</TABLE>");

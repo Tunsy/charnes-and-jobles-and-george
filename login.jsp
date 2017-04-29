@@ -2,7 +2,8 @@
  javax.sql.*,
  java.io.IOException,
  javax.servlet.http.*,
- javax.servlet.*"
+ javax.servlet.*,
+ java.util.*"
 %>
 
 <h1 align="center"> Charnes & Jobles & George</h1>
@@ -21,7 +22,11 @@
         if(email == null || password == null){
             request.setAttribute("login", -1);
         }
-
+		
+        ArrayList<String> shoppingcartitems = new ArrayList<String>();
+        
+        session.setAttribute("shoppingcart", shoppingcartitems);
+        
         String loginUser = "root";
         String loginPasswd = "122b";
         String loginUrl = "jdbc:mysql://localhost:3306/booksdb";

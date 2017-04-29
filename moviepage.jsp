@@ -17,6 +17,9 @@
             <div>
               <ul class="collection with-header">
                  <%
+                 
+					String qstring = request.getQueryString();
+                 	
                     try {               
                         //Class.forName("org.gjt.mm.mysql.Driver");
                         Connection c = DriverManager.getConnection(
@@ -25,6 +28,18 @@
                         Class.forName("com.mysql.jdbc.Driver").newInstance();
 
                         String isbn = request.getParameter("b_isbn");
+
+                       	
+                        if(request.getParameter("btn") != null) //btnSubmit is the name of your button, not id of that button.
+                        {
+                            out.println("test");
+                            ArrayList<String> cart = (ArrayList) session.getAttribute("shoppingcart");
+                            //cart.add(isbn);
+                        }
+                        else{
+                        	out.println(qstring);
+                        }
+                        
                         //String isbn = "1";
                         String query = "SELECT * FROM book LEFT JOIN (author, authored, genre_in_books, genre) ON (book.isbn = authored.isbn AND authored.isbn = genre_in_books.isbn AND authored.author_id = author.author_id AND genre.id = genre_in_books.genre_id) WHERE book.isbn = ?";
                         PreparedStatement statement = c.prepareStatement(query);
@@ -94,6 +109,9 @@
                             out.println("<li class=\"collection-item\">Year published: " + year + "</li>");
                             out.println("<li class=\"collection-item\">ISBN: " + isbn + "</li>");
                         }
+                        
+                        
+                        
 
                         
                         //for(int i = 0; i < authors.size(); i++){
@@ -121,7 +139,16 @@
                     }
                   %>                   
               </ul>
-              <a class="waves-effect waves-light btn"><i class="material-icons left">shopping_cart</i>Add to shopping cart</a>
+              		<form action="confirm.jsp" method="post">
+              			
+              			<input type="submit" name="btnSubmit" value="true" />
+              			<button class="waves-effect waves-light btn" id="btn" value="default">
+              				<i class="material-icons left">
+              					shopping_cart
+              				</i>
+              				Add to shopping cart
+              			</button>
+              		</form>
             </div>
         </div>
       </div>
