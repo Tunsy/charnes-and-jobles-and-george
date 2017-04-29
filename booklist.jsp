@@ -41,7 +41,7 @@
 		<table class="bordered">
 			<thead>
 				<tr>
-					<th style="width: 75px">ISBN <a
+					<th style="width: 80px">ISBN <a
 						href=<%
                					out.println("\"booklist.jsp?");
                					if (request.getParameter("reverse").equals("true")){
@@ -286,114 +286,118 @@
                 if(rsCount.next()){
                     queryCount = rsCount.getInt("total");
                 }
-                
-                query += " LIMIT " + (pageid - 1) + "," + total;
-                rs = statement.executeQuery(query);
-                
-                String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id";
-                PreparedStatement author_statement = c.prepareStatement(author_query);
-                
-                String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id;";
-                PreparedStatement genre_statement = c.prepareStatement(genre_query);
-        	    
-                String singleAddBtn = request.getParameter("btn");
-
-                // Iterate through each row of rs
-                while (rs.next()) {
-                	String b_isbn = rs.getString("isbn");                    
-                    
-                	author_statement.setInt(1, Integer.parseInt(b_isbn));
-            	    ResultSet author_rs = author_statement.executeQuery();
-            	    
-            	    genre_statement.setInt(1, Integer.parseInt(b_isbn));
-            	    ResultSet genre_rs = genre_statement.executeQuery();
-                    
-                    String b_title = rs.getString("title");
-                    String b_year = rs.getString("year_published");
-                    String b_publisher = rs.getString("publisher");
-                    out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td><a href = bookpage.jsp?b_isbn="+ b_isbn + ">" + b_title + "</a></td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
-                    
-                    
-                    
-                    while (author_rs.next())
-                    {
-                    	String a_author_id = author_rs.getString("author_id");
-                    	String a_firstName = author_rs.getString("first_name");
-                    	String a_lastName = author_rs.getString("last_name");
-                    	out.println("<a href = authorpage.jsp?author_id=" + a_author_id + ">" + a_firstName + " " + a_lastName + "</a>");
-                    	if(!author_rs.isLast())
-                    	{
-                    		//out.println(", ");
-                    		out.println("<br>");
-                    	}
-                    	
-                    }
-                    
-            	    out.println("</td>");
-                    
-            	    out.println("<td>");
-            	    
-            	    if (!genre_rs.isBeforeFirst() ) {    
-        			    out.println("None listed"); 
-        				}
-        			else {
-        				out.println("<br>"); 
-                    	while(genre_rs.next()) // 
-                		{
-                    		String genre = genre_rs.getString("genre_name");
-                    		out.println(genre);
-                    		if(!genre_rs.isLast())
-                    		{
-                    			out.println("<br>");
-                    		}
-                		}
-        			}
-               		out.print("</td><td>");
-%>
-			<form
-				action="booklist.jsp?<% out.println(request.getQueryString()); %>" method="post">
-				<input type="hidden" name="isbn" value=<% out.println(b_isbn); %> />
-					<button type="submit" class="waves-effect waves-light btn" name="btn" value="default">
-						<i class="material-icons left"> shopping_cart </i>
-						Add
-					</button>
-			</form>
-
-			<%               		out.print("</td></tr>");
-						if(singleAddBtn != null) //btnSubmit is the name of your button, not id of that button.
-						{
-							String isbn = request.getParameter("isbn");
-							ArrayList<String> cart = (ArrayList) session.getAttribute("shoppingcart");
-							cart.add(isbn);
-							singleAddBtn = null;
-						}
+                if (queryCount != 0){
+	                query += " LIMIT " + (pageid - 1) + "," + total;
+	                rs = statement.executeQuery(query);
+	                
+	                String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id";
+	                PreparedStatement author_statement = c.prepareStatement(author_query);
+	                
+	                String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id;";
+	                PreparedStatement genre_statement = c.prepareStatement(genre_query);
+	        	    
+	                String singleAddBtn = request.getParameter("btn");
+	
+	                // Iterate through each row of rs
+	                while (rs.next()) {
+	                	String b_isbn = rs.getString("isbn");                    
+	                    
+	                	author_statement.setInt(1, Integer.parseInt(b_isbn));
+	            	    ResultSet author_rs = author_statement.executeQuery();
+	            	    
+	            	    genre_statement.setInt(1, Integer.parseInt(b_isbn));
+	            	    ResultSet genre_rs = genre_statement.executeQuery();
+	                    
+	                    String b_title = rs.getString("title");
+	                    String b_year = rs.getString("year_published");
+	                    String b_publisher = rs.getString("publisher");
+	                    out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td><a href = bookpage.jsp?b_isbn="+ b_isbn + ">" + b_title + "</a></td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
+	                    
+	                    
+	                    
+	                    while (author_rs.next())
+	                    {
+	                    	String a_author_id = author_rs.getString("author_id");
+	                    	String a_firstName = author_rs.getString("first_name");
+	                    	String a_lastName = author_rs.getString("last_name");
+	                    	out.println("<a href = authorpage.jsp?author_id=" + a_author_id + ">" + a_firstName + " " + a_lastName + "</a>");
+	                    	if(!author_rs.isLast())
+	                    	{
+	                    		//out.println(", ");
+	                    		out.println("<br>");
+	                    	}
+	                    	
+	                    }
+	                    
+	            	    out.println("</td>");
+	                    
+	            	    out.println("<td>");
+	            	    
+	            	    if (!genre_rs.isBeforeFirst() ) {    
+	        			    out.println("None listed"); 
+	        				}
+	        			else {
+	        				out.println("<br>"); 
+	                    	while(genre_rs.next()) // 
+	                		{
+	                    		String genre = genre_rs.getString("genre_name");
+	                    		out.println(genre);
+	                    		if(!genre_rs.isLast())
+	                    		{
+	                    			out.println("<br>");
+	                    		}
+	                		}
+	        			}
+	               		out.print("</td><td>");
+	%>
+				<form
+					action="booklist.jsp?<% out.println(request.getQueryString()); %>" method="post">
+					<input type="hidden" name="isbn" value=<% out.println(b_isbn); %> />
+						<button type="submit" class="waves-effect waves-light btn" name="btn" value="default">
+							<i class="material-icons left"> shopping_cart </i>
+							Add
+						</button>
+				</form>
+	
+				<%               		out.print("</td></tr>");
+							if(singleAddBtn != null) //btnSubmit is the name of your button, not id of that button.
+							{
+								String isbn = request.getParameter("isbn");
+								ArrayList<String> cart = (ArrayList) session.getAttribute("shoppingcart");
+								cart.add(isbn);
+								singleAddBtn = null;
+							}
+	                }
+	                out.println("</TABLE>");
+	                //Limit data
+					String formatTotal = "total=" + request.getParameter("total");
+	                out.println("Limit books per page: ");			
+	                out.println("<a href=\"booklist.jsp?" + qstring.replace(formatTotal, "total=5") + "\">5</a>");		// qstring has page=1
+	                out.println("<a href=\"booklist.jsp?" + qstring.replace(formatTotal, "total=15") + "\">15</a>");
+	                out.println("<a href=\"booklist.jsp?" + qstring.replace(formatTotal, "total=25") + "\">25</a>");
+	                out.println("<a href=\"booklist.jsp?" + qstring.replace(formatTotal, "total=50") + "\">50</a>");
+	                // Pagination
+	                // Disable previous button while on first page
+	                out.println("<ul class=\"pagination\">");
+	                String formatCurrentPage = "page=" + spageid;	// String version of page
+	                String newPagePrev = "page=" + Integer.toString(currentPage-1);
+	                String newPageForward = "page=" + Integer.toString(currentPage+1);
+	                if(currentPage <= 1){
+	                    out.println("<li class=\"disabled\"><i class=\"material-icons\">chevron_left</i> Prev </li>");
+	                }else{
+	                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?" + request.getQueryString().replace(formatCurrentPage, newPagePrev) + "\"><i class=\"material-icons\">chevron_left</i> Prev </a></li>");
+	                }
+	                // Disable next button while on last page
+	                if(currentPage >= Math.ceil(queryCount/total)){
+	                    out.println("<li class=\"disabled\"> Next <i class=\"material-icons\">chevron_right</i></li>");
+	                }else{
+	                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?"  + request.getQueryString().replace(formatCurrentPage, newPageForward) +  "\">Next <i class=\"material-icons\">chevron_right</i></a></li></ul>");
+	                }
                 }
-                out.println("</TABLE>");
-                //Limit data
-				String formatTotal = "total=" + request.getParameter("total");
-                out.println("Limit books per page: ");			
-                out.println("<a href=\"booklist.jsp?" + qstring.replace(formatTotal, "total=5") + "\">5</a>");		// qstring has page=1
-                out.println("<a href=\"booklist.jsp?" + qstring.replace(formatTotal, "total=15") + "\">15</a>");
-                out.println("<a href=\"booklist.jsp?" + qstring.replace(formatTotal, "total=25") + "\">25</a>");
-                out.println("<a href=\"booklist.jsp?" + qstring.replace(formatTotal, "total=50") + "\">50</a>");
-                // Pagination
-                // Disable previous button while on first page
-                out.println("<ul class=\"pagination\">");
-                String formatCurrentPage = "page=" + spageid;	// String version of page
-                String newPagePrev = "page=" + Integer.toString(currentPage-1);
-                String newPageForward = "page=" + Integer.toString(currentPage+1);
-                if(currentPage <= 1){
-                    out.println("<li class=\"disabled\"><i class=\"material-icons\">chevron_left</i> Prev </li>");
-                }else{
-                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?" + request.getQueryString().replace(formatCurrentPage, newPagePrev) + "\"><i class=\"material-icons\">chevron_left</i> Prev </a></li>");
+                // EMPTY RESULT SET (NO QUERIES)
+                else{
+                	out.println("<div><p>Search found 0 results.</p></div>");
                 }
-                // Disable next button while on last page
-                if(currentPage >= Math.ceil(queryCount/total)){
-                    out.println("<li class=\"disabled\"> Next <i class=\"material-icons\">chevron_right</i></li>");
-                }else{
-                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?"  + request.getQueryString().replace(formatCurrentPage, newPageForward) +  "\">Next <i class=\"material-icons\">chevron_right</i></a></li></ul>");
-                }
-                
 
             } catch (SQLException ex) {
                 while (ex != null) {
