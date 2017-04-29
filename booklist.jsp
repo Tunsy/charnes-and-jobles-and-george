@@ -6,6 +6,9 @@
  javax.servlet.*,
  java.lang.Math,
  java.util.*"%>
+
+<%@include file="pair.jsp"%>
+
 <html>
 <%@include file="css.html"%>
 
@@ -313,8 +316,6 @@
 	                    String b_publisher = rs.getString("publisher");
 	                    out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td><a href = bookpage.jsp?b_isbn="+ b_isbn + ">" + b_title + "</a></td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
 	                    
-	                    
-	                    
 	                    while (author_rs.next())
 	                    {
 	                    	String a_author_id = author_rs.getString("author_id");
@@ -350,21 +351,47 @@
 	        			}
 	               		out.print("</td><td>");
 	%>
-				<form
-					action="booklist.jsp?<% out.println(request.getQueryString()); %>" method="post">
-					<input type="hidden" name="isbn" value=<% out.println(b_isbn); %> />
-						<button type="submit" class="waves-effect waves-light btn" name="btn" value="default">
-							<i class="material-icons left"> shopping_cart </i>
-							Add
-						</button>
-				</form>
-	
-				<%               		out.print("</td></tr>");
+			<form
+				action="booklist.jsp?<% out.println(request.getQueryString()); %>"
+				method="post">
+				<input type="hidden" name="isbn" value=<% out.println(b_isbn); %> />
+				<button type="submit" class="waves-effect waves-light btn"
+					name="btn" value="default">
+					<i class="material-icons left"> shopping_cart </i> Add
+				</button>
+			</form>
+
+			<%              out.print("</td></tr>");
 							if(singleAddBtn != null) //btnSubmit is the name of your button, not id of that button.
 							{
-								String isbn = request.getParameter("isbn");
-								ArrayList<String> cart = (ArrayList) session.getAttribute("shoppingcart");
-								cart.add(isbn);
+								ArrayList<ItemCounter> cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
+								boolean duplicate = false;
+								if(cart.size() == 0)
+								{
+									ItemCounter book = new ItemCounter(isbn);
+									cart.add(book);
+								}
+								else
+								{
+									ItemCounter book = new ItemCounter(isbn);
+									
+									for(int i = 0; i < cart.size(); i++)
+									{
+										if(cart.get(i).isbn() == book.isbn())
+										{
+											duplicate = true;
+											cart.get(i).increment();
+											break;
+										}
+									}
+									
+									if(!duplicate)
+									{
+										cart.add(book);
+									}
+								}
+								
+								
 								singleAddBtn = null;
 							}
 	                }

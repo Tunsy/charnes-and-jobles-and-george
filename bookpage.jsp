@@ -6,7 +6,8 @@
  java.lang.Math,
  java.util.*"
 %>
-
+<%@include file="pair.jsp"
+%>
 <html>
 <%@include file="navbar.jsp"%>
 <%@include file="css.html"%>  
@@ -98,10 +99,35 @@
                             out.println("<li class=\"collection-item\">ISBN: " + isbn + "</li>");
                         }
                         
+                       	// 
                     	if(request.getParameter("btn") != null) //btnSubmit is the name of your button, not id of that button.
                     	{
-                        	ArrayList<String> cart = (ArrayList) session.getAttribute("shoppingcart");
-                        	cart.add(isbn);
+							ArrayList<ItemCounter> cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
+							boolean duplicate = false;
+							if(cart.size() == 0)
+							{
+								ItemCounter book = new ItemCounter(isbn);
+								cart.add(book);
+							}
+							else
+							{
+								ItemCounter book = new ItemCounter(isbn);
+								
+								for(int i = 0; i < cart.size(); i++)
+								{
+									if(cart.get(i).isbn() == book.isbn())
+									{
+										duplicate = true;
+										cart.get(i).increment();
+										break;
+									}
+								}
+								
+								if(!duplicate)
+								{
+									cart.add(book);
+								}
+							}
                     	}                    	
                         
                         //for(int i = 0; i < authors.size(); i++){

@@ -6,6 +6,9 @@
  java.util.*"
 %>
 
+<%@include file="pair.jsp"
+%>
+
 <h1 align="center"> Charnes & Jobles & George</h1>
 
 <%    
@@ -23,7 +26,7 @@
             request.setAttribute("login", -1);
         }
 		
-        ArrayList<String> shoppingcartitems = new ArrayList<String>();
+        ArrayList<ItemCounter> shoppingcartitems = new ArrayList<ItemCounter>();
         
         session.setAttribute("shoppingcart", shoppingcartitems);
         
