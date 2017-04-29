@@ -19,22 +19,82 @@
                 response.setContentType("text/html");               
                 Class.forName("com.mysql.jdbc.Driver").newInstance();
                 Statement statement = c.createStatement();
-
-                // Order by chevrons
-                out.println("<table class=\"bordered\">");
-                out.println("<thead><tr><th style=\"width:100px\">ISBN<a href=\"booklist.jsp?page=1&orderby=isbn&reverse=false&total=10&letter=" + request.getParameter("letter") + "\">" +
-            		"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=isbn&reverse=true&total=10&letter=" + request.getParameter("letter") + "\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" + 
-                	"<th>Title<a href=\"booklist.jsp?page=1&orderby=title&reverse=false&total=10&letter=" + request.getParameter("letter") + "\">" +
-            		"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=title&reverse=true&total=10&letter=" + request.getParameter("letter") + "\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
-            		"<th style=\"width:200px\">Publisher<a href=\"booklist.jsp?page=1&orderby=publisher&reverse=false&total=10&letter=" + request.getParameter("letter") +"\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=publisher&reverse=true&total=10&letter=" + request.getParameter("letter") +"\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
-                	"<th style=\"width:100px\">Year<a href=\"booklist.jsp?page=1&orderby=year_published&reverse=false&total=10&letter=" + request.getParameter("letter") +"\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_down</i></a><a href=\"booklist.jsp?page=1&orderby=year_published&reverse=true&total=10&letter=" + request.getParameter("letter") +"\">" +
-                	"<i class=\"material-icons\">keyboard_arrow_up</i></th></a>" +
-                	"<th>Author</th>" + "<th>Genre</th>" + "<th>Price</th>" + "<th>Quantity</th></tr></thead>");
+                String qstring = request.getQueryString();
+                if (qstring.equals("")){
+                	qstring = "page=1&orderby=title&reverse=false&total=10";
+                }
+                String replacer = "orderby=" + request.getParameter("orderby");
+		%>
+			<table class="bordered">
+			<thead>
+				<tr>
+					<th style="width: 80px">ISBN <a
+						href=<%
+               					out.println("\"shoppingcart.jsp?");
+               					if (request.getParameter("reverse").equals("true")){
+               						out.println(qstring.replace("reverse=true","reverse=false").replace(replacer, "orderby=book.isbn"));	// Replacer = "orderby=attribute"
+               						out.println("\">");
+               						out.println("<i class=\"material-icons\">arrow_drop_down</i>");
+               					}
+               					else if (request.getParameter("reverse").equals("false")){
+               						out.println(qstring.replace("reverse=false","reverse=true").replace(replacer, "orderby=book.isbn"));	// Replacer = "orderby=attribute"
+               						out.println("\">");
+               						out.println("<i class=\"material-icons\"> arrow_drop_up </i>");
+               					}
+               				%></a>
+					</th>
+					<th style="width: 400px">Title <a
+						href=<%
+           					out.println("\"shoppingcart.jsp?");
+           					if (request.getParameter("reverse").equals("true")){
+           						out.println(qstring.replace("reverse=true","reverse=false").replace(replacer, "orderby=title"));	// Replacer = "orderby=attribute"
+           						out.println("\">");
+           						out.println("<i class=\"material-icons\">arrow_drop_down</i>");
+           					}
+           					else if (request.getParameter("reverse").equals("false")){
+           						out.println(qstring.replace("reverse=false","reverse=true").replace(replacer, "orderby=title"));	// Replacer = "orderby=attribute"
+           						out.println("\">");
+           						out.println("<i class=\"material-icons\"> arrow_drop_up </i>");
+           					}
+           				%></a>
+					</th>
+					<th style="width: 220px">Publisher <a
+						href=<%
+        					out.println("\"shoppingcart.jsp?");
+        					if (request.getParameter("reverse").equals("true")){
+        						out.println(qstring.replace("reverse=true","reverse=false").replace(replacer, "orderby=publisher"));	// Replacer = "orderby=attribute"
+        						out.println("\">");
+        						out.println("<i class=\"material-icons\">arrow_drop_down</i>");
+        					}
+        					else if (request.getParameter("reverse").equals("false")){
+        						out.println(qstring.replace("reverse=false","reverse=true").replace(replacer, "orderby=publisher"));	// Replacer = "orderby=attribute"
+        						out.println("\">");
+        						out.println("<i class=\"material-icons\"> arrow_drop_up </i>");
+        					}
+        				%></a>
+					</th>
+					<th style="width: 100px">Year <a
+						href=<%
+        					out.println("\"shoppingcart.jsp?");
+        					if (request.getParameter("reverse").equals("true")){
+        						out.println(qstring.replace("reverse=true","reverse=false").replace(replacer, "orderby=year_published"));	// Replacer = "orderby=attribute"
+        						out.println("\">");
+        						out.println("<i class=\"material-icons\">arrow_drop_down</i>");
+        					}
+        					else if (request.getParameter("reverse").equals("false")){
+        						out.println(qstring.replace("reverse=false","reverse=true").replace(replacer, "orderby=year_published"));	// Replacer = "orderby=attribute"
+        						out.println("\">");
+        						out.println("<i class=\"material-icons\"> arrow_drop_up </i>");
+        					}
+        				%></a>
+					</th>
+					<th>Author</th>
+					<th>Genre</th>
+					<th>Price</th>
+					<th>Quantity</th>
+				</tr>
+			</thead>
+		<%
             } catch (SQLException ex) {
                 while (ex != null) {
                     System.out.println("SQL Exception:  " + ex.getMessage());
