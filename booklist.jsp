@@ -5,9 +5,8 @@
  javax.servlet.http.*,
  javax.servlet.*,
  java.lang.Math,
- java.util.*"%>
-
-<%@include file="pair.jsp"%>
+ java.util.*,
+ cart.ItemCounter"%>
 
 <html>
 <%@include file="css.html"%>
@@ -351,47 +350,64 @@
 	        			}
 	               		out.print("</td><td>");
 	%>
-			<form
-				action="booklist.jsp?<% out.println(request.getQueryString()); %>"
-				method="post">
-				<input type="hidden" name="isbn" value=<% out.println(b_isbn); %> />
-				<button type="submit" class="waves-effect waves-light btn"
-					name="btn" value="default">
-					<i class="material-icons left"> shopping_cart </i> Add
-				</button>
-			</form>
+					<script>
+						$(document).ready(function() {
+						    $('select').material_select();
+						  });
+					</script>
+							<form
+								action="booklist.jsp?<% out.println(request.getQueryString()); %>"
+								method="post">
+								<input type="hidden" name="isbn" value=<% out.println(b_isbn); %> />
+								<div class="input-field">
+									<select name="item_quantity">
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+									</select>
+									<label>Qty:</label>
+								</div>
+								<button type="submit"
+									class=" waves-effect waves-light btn"
+									name="btn"
+									value="default">
+									<i class="material-icons left"> shopping_cart </i>
+								</button>
+							</form>
 
 			<%              out.print("</td></tr>");
+							String isbn = b_isbn;
 							if(singleAddBtn != null) //btnSubmit is the name of your button, not id of that button.
 							{
-								ArrayList<ItemCounter> cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
+								ArrayList<ItemCounter> cart = new ArrayList<ItemCounter>(); 
+								cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
 								boolean duplicate = false;
-								if(cart.size() == 0)
+								int itemquantity = Integer.parseInt(request.getParameter("item_quantity"));
+								out.println(itemquantity);
+								ItemCounter book = new ItemCounter(isbn);
+								
+								for(int i = 0; i < cart.size(); i++)
 								{
-									ItemCounter book = new ItemCounter(isbn);
+									if(cart.get(i).isbn().equals(book.isbn()))
+									{
+										duplicate = true;
+										cart.get(i).addQuantity(itemquantity);
+										break;
+									}
+								}
+								
+								if(!duplicate)
+								{
+									book.setQuantity(itemquantity);
 									cart.add(book);
 								}
-								else
-								{
-									ItemCounter book = new ItemCounter(isbn);
-									
-									for(int i = 0; i < cart.size(); i++)
-									{
-										if(cart.get(i).isbn() == book.isbn())
-										{
-											duplicate = true;
-											cart.get(i).increment();
-											break;
-										}
-									}
-									
-									if(!duplicate)
-									{
-										cart.add(book);
-									}
-								}
-								
-								
+
 								singleAddBtn = null;
 							}
 	                }

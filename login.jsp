@@ -3,10 +3,8 @@
  java.io.IOException,
  javax.servlet.http.*,
  javax.servlet.*,
- java.util.*"
-%>
-
-<%@include file="pair.jsp"
+ java.util.*,
+ cart.ItemCounter"
 %>
 
 <h1 align="center"> Charnes & Jobles & George</h1>

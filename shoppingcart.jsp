@@ -4,9 +4,8 @@
  javax.servlet.http.*,
  javax.servlet.*,
  java.lang.Math,
- java.util.*"
-%>
-<%@include file="pair.jsp"
+ java.util.*,
+ cart.ItemCounter"
 %>
 
 <html>
@@ -102,19 +101,19 @@
                 String query = "SELECT * FROM book WHERE isbn = ?";
                 PreparedStatement book_statement = c.prepareStatement(query);
                 
-                String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id";
+                String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id ORDER BY last_name, first_name ASC";
                 PreparedStatement author_statement = c.prepareStatement(author_query);
                 
-                String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id;";
+                String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id ORDER BY genre_name ASC";
                 PreparedStatement genre_statement = c.prepareStatement(genre_query);
                 
-                ArrayList<ItemCounter> cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
+                ArrayList<ItemCounter> cart = new ArrayList<ItemCounter>();
+                cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
                 
                 
                 for (int i = 0; i < cart.size(); i++) {
                 	String b_isbn = cart.get(i).isbn();                   
                     
-                	
                 	book_statement.setInt(1, Integer.parseInt(b_isbn));
             	    ResultSet rs = book_statement.executeQuery();
             	    
@@ -129,7 +128,7 @@
                     String b_title = rs.getString("title");
                     String b_year = rs.getString("year_published");
                     String b_publisher = rs.getString("publisher");
-                    out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td><a href = moviepage.jsp?b_isbn="+ b_isbn + ">" + b_title + "</a></td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
+                    out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td><a href = bookpage.jsp?b_isbn="+ b_isbn + ">" + b_title + "</a></td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
                     
                     
                     
@@ -169,7 +168,7 @@
         			}
             	    
             	    out.println("</td><td>$10.00</td>");
-            	    out.println("<td>" + cart.get(i).quantity + "</td>");
+            	    out.println("<td>" + cart.get(i).quantity() + "</td>");
                 }
                		 		
             } catch (SQLException ex) {

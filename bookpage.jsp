@@ -4,10 +4,10 @@
  javax.servlet.http.*,
  javax.servlet.*,
  java.lang.Math,
- java.util.*"
+ java.util.*,
+ cart.ItemCounter"
 %>
-<%@include file="pair.jsp"
-%>
+
 <html>
 <%@include file="navbar.jsp"%>
 <%@include file="css.html"%>  
@@ -115,7 +115,7 @@
 								
 								for(int i = 0; i < cart.size(); i++)
 								{
-									if(cart.get(i).isbn() == book.isbn())
+									if(cart.get(i).isbn().equals(book.isbn()))
 									{
 										duplicate = true;
 										cart.get(i).increment();
