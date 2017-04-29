@@ -12,16 +12,8 @@
 <%@include file="css.html"%>
 
 <%
-	String isbn = request.getParameter("isbn");
-	if(isbn != null) //btnSubmit is the name of your button, not id of that button.
-	{
-		out.println(request.getParameter("btn"));
-		
-    	out.println(isbn);
+		out.println("Testing shopping cart");
     	ArrayList<String> cart = (ArrayList) session.getAttribute("shoppingcart");
-    	cart.add(isbn);
-	}
-	else{
-		out.println("else");
-	}
+    	for (int i = 0; i < cart.size(); i++)
+    		out.println(cart.get(i));
 %>

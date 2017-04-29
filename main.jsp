@@ -1,5 +1,12 @@
 <html>
 <%@include file="css.html"%>
+<%@page import="java.sql.*,
+ javax.sql.*,
+ java.io.IOException,
+ javax.servlet.http.*,
+ javax.servlet.*,
+ java.lang.Math"
+%>
   
 <%
 	response.setHeader("Cache-Control","no-cache");
@@ -66,6 +73,26 @@
                         		out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=1&orderby=title&reverse=false&total=10&letter=" + i + "\">" + i + "</a></li>"); 
     					%>
                     </ul>                
+                </div>
+            </div>
+            <div class="row">
+                <div class="genre-search">
+                    <h5 align="center">Browse books by genre</h5>
+                        <%
+                            Connection c = DriverManager.getConnection(
+                            session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
+                            response.setContentType("text/html");               
+                            Class.forName("com.mysql.jdbc.Driver").newInstance();
+                            Statement statement = c.createStatement();
+
+                            String genreQuery = "SELECT genre_name FROM genre";
+                            ResultSet genres = statement.executeQuery(genreQuery);
+
+                            while(genres.next()){
+                                out.println("<a class=\"waves-effect waves-light btn genre-button\">" + genres.getString("genre_name") + "</a>");
+                            }
+                            out.println("<a class=\"waves-effect waves-light btn genre-button\">" + "No Genre" + "</a>");
+                        %>               
                 </div>
             </div>
     </div>
