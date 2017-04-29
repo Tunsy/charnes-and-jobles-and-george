@@ -17,14 +17,17 @@
             <div>
               <ul class="collection with-header">
                  <%
+                 
+					String qstring = request.getQueryString();
+                    String isbn = request.getParameter("b_isbn");
+
                     try {               
                         //Class.forName("org.gjt.mm.mysql.Driver");
                         Connection c = DriverManager.getConnection(
                             session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
                         response.setContentType("text/html");               
                         Class.forName("com.mysql.jdbc.Driver").newInstance();
-
-                        String isbn = request.getParameter("b_isbn");
+                        
                         //String isbn = "1";
                         String query = "SELECT * FROM book LEFT JOIN (author, authored, genre_in_books, genre) ON (book.isbn = authored.isbn AND authored.isbn = genre_in_books.isbn AND authored.author_id = author.author_id AND genre.id = genre_in_books.genre_id) WHERE book.isbn = ?";
                         PreparedStatement statement = c.prepareStatement(query);
@@ -55,7 +58,7 @@
                         		String a_author_id = author_rs.getString("author_id");
                         		String a_firstName = author_rs.getString("first_name");
                             	String a_lastName = author_rs.getString("last_name");
-                            	out.println("<a href = main.jsp?author_id=" + a_author_id + ">" + a_firstName + " " + a_lastName + "</a>");
+                            	out.println("<a href = authorpage.jsp?author_id=" + a_author_id + ">" + a_firstName + " " + a_lastName + "</a>");
                             	if(!author_rs.isLast())
                             	{
                             		out.println("<br>");
@@ -94,7 +97,12 @@
                             out.println("<li class=\"collection-item\">Year published: " + year + "</li>");
                             out.println("<li class=\"collection-item\">ISBN: " + isbn + "</li>");
                         }
-
+                        
+                    	if(request.getParameter("btn") != null) //btnSubmit is the name of your button, not id of that button.
+                    	{
+                        	ArrayList<String> cart = (ArrayList) session.getAttribute("shoppingcart");
+                        	cart.add(isbn);
+                    	}                    	
                         
                         //for(int i = 0; i < authors.size(); i++){
                         //    out.print(authors.get(i));
@@ -121,7 +129,15 @@
                     }
                   %>                   
               </ul>
-              <a class="waves-effect waves-light btn"><i class="material-icons left">shopping_cart</i>Add to shopping cart</a>
+              		<form action="moviepage.jsp?<% out.println(qstring); %>" method="post">
+						<input type="hidden" name="isbn" value=<% out.println(isbn);%> />               			
+              			<button type="submit" class="waves-effect waves-light btn" name="btn" value="default">
+              				<i class="material-icons left">
+              					shopping_cart
+              				</i>
+              				Add to shopping cart
+              			</button>
+              		</form>
             </div>
         </div>
       </div>
