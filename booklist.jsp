@@ -1,14 +1,14 @@
-<%@page import="java.sql.*,
+<%@page
+	import="java.sql.*,
  javax.sql.*,
  java.io.IOException,
  javax.servlet.http.*,
  javax.servlet.*,
- java.lang.Math"
-%>
+ java.lang.Math"%>
 
 <html>
 <%@include file="css.html"%>
-  
+
 <%
 	response.setHeader("Cache-Control","no-cache");
 	response.setHeader("Cache-Control","no-store");
@@ -20,11 +20,11 @@
 		response.sendRedirect("index.jsp");
 	}
 %>
-  
+
 <%@include file="navbar.jsp"%>
-	<body>
-		<div class="container">
-<%
+<body>
+	<div class="container">
+		<%
 	try {               
 	//Class.forName("org.gjt.mm.mysql.Driver");
 	Connection c = DriverManager.getConnection(
@@ -32,114 +32,235 @@
 	response.setContentType("text/html");               
 	Class.forName("com.mysql.jdbc.Driver").newInstance();
 	Statement statement = c.createStatement();
-    // Order by chevrons (arrows)
+	   // Order by chevrons (arrows)
+	   String qstring = request.getQueryString();
+	   String replacer = "orderby=" + request.getParameter("orderby");
 %>
-			<table class="bordered">
+		<table class="bordered">
 			<thead>
 				<tr>
-               		<th style="width:150px">
-               			ISBN
-               			<a href="booklist.jsp?page=1&orderby=isbn&reverse=false&total=10&letter="<%request.getParameter("letter");%>>
-            				<i class="material-icons">
-            					keyboard_arrow_down
-            				</i>
-            			</a>
-            			<a href="booklist.jsp?page=1&orderby=isbn&reverse=true&total=10&letter="<%request.getParameter("letter");%>>
-               			<i class="material-icons">
-               				keyboard_arrow_up
-               			</i>
-               		</th>
-               		</a> 
-               	<th>
-               		Title
-               		<a href="booklist.jsp?page=1&orderby=title&reverse=false&total=10&letter="<%request.getParameter("letter");%>>
-	            		<i class="material-icons">
-	            			keyboard_arrow_down
-	            		</i>
-	            	</a>
-	            	<a href="booklist.jsp?page=1&orderby=title&reverse=true&total=10&letter="<%request.getParameter("letter");%>>
-                		<i class="material-icons">
-                			keyboard_arrow_up
-                		</i>
-               		</a>
-               	</th>
-           		<th style="width:200px">
-           			Publisher
-           			<a href="booklist.jsp?page=1&orderby=publisher&reverse=false&total=10&letter="<%request.getParameter("letter");%>>
-                		<i class="material-icons">
-                			keyboard_arrow_down
-                		</i>
-               		</a>
-               		<a href=\"booklist.jsp?page=1&orderby=publisher&reverse=true&total=10&letter="<%request.getParameter("letter");%>>
-               			<i class="material-icons">
-               				keyboard_arrow_up
-               			</i>
-               		</a>
-               	</th>
-               	<th style="width:100px">
-               		Year
-               		<a href="booklist.jsp?page=1&orderby=year_published&reverse=false&total=10&letter="<%request.getParameter("letter");%>>
-               		<i class="material-icons">
-               			keyboard_arrow_down</i>
-               		</a>
-               		<a href="booklist.jsp?page=1&orderby=year_published&reverse=true&total=10&letter="<%request.getParameter("letter");%>>
-               		<i class="material-icons">
-               			keyboard_arrow_up
-               		</i>
-               		</a>
-               	</th>
-               	<th>
-               		Author
-               	</th>
-               </tr>
-		</thead>
-<%	
-                // Calculate tablesize for pagination
-                String spageid = request.getParameter("page");  
-                int pageid = Integer.parseInt(spageid);  
-                int currentPage;
-                int total = Integer.parseInt(request.getParameter("total"));  
-                if(pageid != 1){
-                    pageid = pageid-1;  
-                    pageid = pageid*total+1;  
-                }  
-                currentPage = (pageid/total)+1;
-                
-                String orderby = request.getParameter("orderby");
-                String query;
-                ResultSet rs;
-                
-                // Change query based on letter and order
-                if(request.getParameter("letter").equals("all")){
-                    if(orderby == null){
-                        query = "SELECT * from book LIMIT " + (pageid - 1) + "," + total;
-                    }else if(orderby != null && request.getParameter("reverse").equals("true")){
-                        query = "SELECT * from book " + "ORDER BY " + orderby + " DESC ";
-                    }else{
-                        query = "SELECT * from book " + "ORDER BY " + orderby;
-                    }
-                }else{
-                    if(orderby == null){
-                        query = "SELECT * from book " + "WHERE title LIKE \'" + request.getParameter("letter") + "%\'";
-                    }else if(orderby != null && request.getParameter("reverse").equals("true")){
-                        query = "SELECT * from book " + "WHERE title LIKE \'" + request.getParameter("letter") + "%\'" + " ORDER BY " + orderby + " DESC ";
-                    }else{
-                        query = "SELECT * from book " + "WHERE title LIKE \'" + request.getParameter("letter") + "%\'" + " ORDER BY " + orderby;
-                    }
-                }
-                
+					<th style="width: 75px">ISBN <a
+						href=<%
+               					out.println("\"booklist.jsp?");
+               					if (request.getParameter("reverse").equals("true")){
+               						out.println(qstring.replace("reverse=true","reverse=false").replace(replacer, "orderby=book.isbn"));	// Replacer = "orderby=attribute"
+               						out.println("\">");
+               						out.println("<i class=\"material-icons\">arrow_drop_down</i>");
+               					}
+               					else if (request.getParameter("reverse").equals("false")){
+               						out.println(qstring.replace("reverse=false","reverse=true").replace(replacer, "orderby=book.isbn"));	// Replacer = "orderby=attribute"
+               						out.println("\">");
+               						out.println("<i class=\"material-icons\"> arrow_drop_up </i>");
+               					}
+               				%></a>
+					</th>
+					<th style="width: 400px">Title <a
+						href=<%
+           					out.println("\"booklist.jsp?");
+           					if (request.getParameter("reverse").equals("true")){
+           						out.println(qstring.replace("reverse=true","reverse=false").replace(replacer, "orderby=title"));	// Replacer = "orderby=attribute"
+           						out.println("\">");
+           						out.println("<i class=\"material-icons\">arrow_drop_down</i>");
+           					}
+           					else if (request.getParameter("reverse").equals("false")){
+           						out.println(qstring.replace("reverse=false","reverse=true").replace(replacer, "orderby=title"));	// Replacer = "orderby=attribute"
+           						out.println("\">");
+           						out.println("<i class=\"material-icons\"> arrow_drop_up </i>");
+           					}
+           				%></a>
+					</th>
+					<th style="width: 220px">Publisher <a
+						href=<%
+        					out.println("\"booklist.jsp?");
+        					if (request.getParameter("reverse").equals("true")){
+        						out.println(qstring.replace("reverse=true","reverse=false").replace(replacer, "orderby=publisher"));	// Replacer = "orderby=attribute"
+        						out.println("\">");
+        						out.println("<i class=\"material-icons\">arrow_drop_down</i>");
+        					}
+        					else if (request.getParameter("reverse").equals("false")){
+        						out.println(qstring.replace("reverse=false","reverse=true").replace(replacer, "orderby=publisher"));	// Replacer = "orderby=attribute"
+        						out.println("\">");
+        						out.println("<i class=\"material-icons\"> arrow_drop_up </i>");
+        					}
+        				%></a>
+					</th>
+					<th style="width: 100px">Year <a
+						href=<%
+        					out.println("\"booklist.jsp?");
+        					if (request.getParameter("reverse").equals("true")){
+        						out.println(qstring.replace("reverse=true","reverse=false").replace(replacer, "orderby=year_published"));	// Replacer = "orderby=attribute"
+        						out.println("\">");
+        						out.println("<i class=\"material-icons\">arrow_drop_down</i>");
+        					}
+        					else if (request.getParameter("reverse").equals("false")){
+        						out.println(qstring.replace("reverse=false","reverse=true").replace(replacer, "orderby=year_published"));	// Replacer = "orderby=attribute"
+        						out.println("\">");
+        						out.println("<i class=\"material-icons\"> arrow_drop_up </i>");
+        					}
+        				%></a>
+					</th>
+					<th>Author</th>
+					<th style="width: 250px">Genre</th>
+				</tr>
+			</thead>
+			<%	
+				// Calculate tablesize for pagination
+				String spageid = request.getParameter("page");  
+				int pageid = Integer.parseInt(spageid);  
+				int currentPage;
+				int total = Integer.parseInt(request.getParameter("total"));  
+				if(pageid != 1){
+				    pageid = pageid-1;  
+				    pageid = pageid*total+1;  
+				}  
+				currentPage = (pageid/total)+1;
+				
+				String query;
+				ResultSet rs;
+				
+				// Change query based on letter and order
+				String advancedsearch = request.getParameter("advancedsearch");
+				String orderby = request.getParameter("orderby");
+				String letter = request.getParameter("letter");
+				String reverse = request.getParameter("reverse");
+				if (advancedsearch == null){
+	         		// Show all books or beginning with a letter
+		         	if (letter != null && letter != ""){
+		          		if(letter.equals("all")){
+						    if(orderby == null){
+						        query = "SELECT * from book LIMIT " + (pageid - 1) + "," + total;
+						    }else if(orderby != null && request.getParameter("reverse").equals("true")){
+						        query = "SELECT * from book " + "ORDER BY " + orderby + " DESC ";
+						    }else{
+						        query = "SELECT * from book " + "ORDER BY " + orderby;
+						    }
+						}else{
+						    if(orderby == null){
+						        query = "SELECT * from book " + "WHERE title LIKE \'" + letter + "%\'";
+						    }
+						    else {
+								query = "SELECT * from book " + "WHERE title LIKE \'" + letter + "%\'" + " ORDER BY " + orderby;
+							}    
+							if (reverse.equals("true")){
+								query += " DESC ";
+							}
+						}
+		         	}
+		         	else{	// SIMPLE SEARCH
+		         		query = "SELECT * FROM book WHERE title = '" + request.getParameter("title") + "' ORDER BY " + orderby;
+		         		if (reverse.equals("true")){
+							query += " DESC ";
+						}
+		         	}
+				}
+				else{	// GENERATE ADVANCED SEARCH QUERY
+					String title = request.getParameter("title");
+					String year = request.getParameter("year");
+					String publisher = request.getParameter("publisher");
+					String author_first_name = request.getParameter("author_first_name");
+					String author_last_name = request.getParameter("author_last_name");
+					String title_fuzzy = request.getParameter("title_fuzzy_search");
+					String publisher_fuzzy = request.getParameter("publisher_fuzzy_search");
+					String fname_fuzzy = request.getParameter("first_name_fuzzy_search");
+					String lname_fuzzy = request.getParameter("last_name_fuzzy_search");
+					
+					int numQueryPredicates = 0;
+
+					query = "SELECT DISTINCT(book.isbn), book.title, book.year_published, book.publisher " +
+							"FROM book, author, authored " +
+							"WHERE ";
+					if (title != null && !title.equals("")){							
+						if (numQueryPredicates != 0){
+							query += " AND ";
+						}
+						query += "title ";
+						if (title_fuzzy != null){	// Fuzzy search on title
+							query += "LIKE '%" + title + "%'";
+						}
+						else{						// Exact string matching on title
+							query += "= '" + title + "'";
+						}
+						numQueryPredicates++;
+					}
+					if (year != null && !year.equals("")){							
+						if (numQueryPredicates != 0){
+							query += " AND ";
+						}
+						query += "year_published = " + year;
+						numQueryPredicates++;
+					}
+					if (publisher != null && !publisher.equals("")){							
+						if (numQueryPredicates != 0){
+							query += " AND ";
+						}
+						query += "publisher ";
+						if (publisher_fuzzy != null){	// Fuzzy search on publisher
+							query += "LIKE '%" + publisher + "%'";
+						}
+						else{						// Exact string matching on publisher
+							query += "= '" + publisher + "'";
+						}
+						numQueryPredicates++;
+					}
+					if (author_first_name != null && !author_first_name.equals("")){							
+						if (numQueryPredicates != 0){
+							query += " AND ";
+						}
+						query += "author.first_name ";
+						if (fname_fuzzy != null){	// Fuzzy search on first_name
+							query += "LIKE '%" + author_first_name + "%'";
+						}
+						else{						// Exact string matching on first_name
+							query += "= '" + author_first_name + "'";
+						}
+						numQueryPredicates++;
+					}
+					if (author_last_name != null && !author_last_name.equals("")){							
+						if (numQueryPredicates != 0){
+							query += " AND ";
+						}
+						query += "author.last_name ";
+						if (lname_fuzzy != null){	// Fuzzy search on last_name
+							query += "LIKE '%" + author_last_name + "%'";
+						}
+						else{						// Exact string matching on last_name
+							query += "= '" + author_last_name + "'";
+						}
+						numQueryPredicates++;
+					}
+					if(numQueryPredicates != 0){
+						query += " AND book.isbn = authored.isbn AND author.author_id = authored.author_id ";
+						if(orderby != null){
+	                        query += "ORDER BY " + orderby;
+	                        if(reverse.equals("true")){
+	                        	query += " DESC ";
+	                        }
+	                    }
+					}
+					else{
+						query += "false=true";	// Return 0 rows on empty 
+					}
+					//	Test print: out.println(query);
+				}
                 // Get the total query count to limit for pagination
                 String countQuery;
                 ResultSet rsCount;
                 int queryCount = 0;
-                countQuery = query.replace("*", "COUNT(*) AS total");
-                //out.println(countQuery);
+                
+                if (advancedsearch == null){
+					countQuery = query.replace("*", "COUNT(*) AS total");
+                }
+                else{
+                	countQuery = query.replace("DISTINCT(book.isbn), book.title, book.year_published, book.publisher", "COUNT(DISTINCT(book.isbn)) AS total");
+                }
+                
                 rsCount = statement.executeQuery(countQuery);
+                
                 if(rsCount.next()){
                     queryCount = rsCount.getInt("total");
-                    //out.println(queryCount);
                 }
-                query += " LIMIT " + (pageid - 1) + "," + total;    
+                
+                query += " LIMIT " + (pageid - 1) + "," + total;
                 rs = statement.executeQuery(query);
                 
                 String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id";
@@ -206,21 +327,19 @@
                		out.print("</td></tr>");
                 }
                 out.println("</TABLE>");
-
                 //Limit data
                 out.println("Limit books per page: ");
                 out.println("<a href=\"booklist.jsp?page=" + (currentPage) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=5" + "&letter=" + request.getParameter("letter") + "\">5</a>");
                 out.println("<a href=\"booklist.jsp?page=" + (currentPage) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=15" + "&letter=" + request.getParameter("letter") + "\">15</a>");
                 out.println("<a href=\"booklist.jsp?page=" + (currentPage) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=25" + "&letter=" + request.getParameter("letter") + "\">25</a>");
                 out.println("<a href=\"booklist.jsp?page=" + (currentPage) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=50" + "&letter=" + request.getParameter("letter") + "\">50</a>");
-                
                 // Pagination
                 // Disable previous button while on first page
                 out.println("<ul class=\"pagination\">");
                 if(currentPage <= 1){
                     out.println("<li class=\"disabled\"><i class=\"material-icons\">chevron_left</i> Prev </li>");
                 }else{
-                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=" + (currentPage-1) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=" + request.getParameter("total") + "&letter=" + request.getParameter("letter") + "\"><i class=\"material-icons\">chevron_left</i> Prev </a></li>");
+                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=" + (currentPage-1) + "&orderby=" + orderby + "&reverse=" + reverse + "&total=" + total + "&letter=" + letter + "\"><i class=\"material-icons\">chevron_left</i> Prev </a></li>");
                 }
                 // Disable next button while on last page
                 if(currentPage >= Math.ceil(queryCount/total)){
@@ -244,8 +363,8 @@
             }
  
 %>
-	
 
-    	</div>
- 	</body>
+
+			</div>
+</body>
 </html>

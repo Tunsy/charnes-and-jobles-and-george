@@ -16,17 +16,28 @@
     <div class="container">
         <div>
 			<p>
-            	<a href="booklist.jsp?page=1&orderby=title&reverse=false&page=1&letter=all&total=10">
-            		List of all books
-            	</a>
+				<form action="booklist.jsp">
+					<input type="hidden" name="page" value="1" />
+					<input type="hidden" name="orderby" value="title" />
+					<input type="hidden" name="reverse" value="false" />
+					<input type="hidden" name="letter" value="all" />
+					<input type="hidden" name="total" value="10" />
+					<button type="submit" class="btn-link">
+	            		List of all books						
+					</button>
+				</form>
            	</p>
 		</div>
 		<div>
             <nav class="navcontainer">
                 <div class="nav-wrapper bluenav">
-                    <form action="search.jsp" class="search-container">
+                    <form action="booklist.jsp" class="search-container">
+						<input type="hidden" name="page" value="1" />
+						<input type="hidden" name="orderby" value="title" />
+						<input type="hidden" name="reverse" value="false" />
+						<input type="hidden" name="total" value="10" />
                         <div class="input-field">
-							<input placeholder="Enter title of book" class="placeholder" id="search" type="search" name="title" required>
+                        <input id="search" type="search" name="title" required>
 							<label class="label-icon" for="search">
 								<i class="material-icons">
 									search
