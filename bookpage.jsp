@@ -129,7 +129,7 @@
                     }
                   %>                   
               </ul>
-              		<form action="moviepage.jsp?<% out.println(qstring); %>" method="post">
+              		<form action="bookpage.jsp?<% out.println(qstring); %>" method="post">
 						<input type="hidden" name="isbn" value=<% out.println(isbn);%> />               			
               			<button type="submit" class="waves-effect waves-light btn" name="btn" value="default">
               				<i class="material-icons left">

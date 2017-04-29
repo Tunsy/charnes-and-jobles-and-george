@@ -5,8 +5,7 @@
  javax.servlet.http.*,
  javax.servlet.*,
  java.lang.Math,
- java.util.*"
-%>
+ java.util.*"%>
 <html>
 <%@include file="css.html"%>
 
@@ -25,7 +24,7 @@
 <%@include file="navbar.jsp"%>
 <body>
 	<div class="container">
-<%
+		<%
 	try {               
 	//Class.forName("org.gjt.mm.mysql.Driver");
 	Connection c = DriverManager.getConnection(
@@ -36,6 +35,8 @@
 	   // Order by chevrons (arrows)
 	   String qstring = request.getQueryString();
 	   String replacer = "orderby=" + request.getParameter("orderby");
+	   String pageRefresher = "page=" + request.getParameter("page");
+	   qstring = qstring.replace(pageRefresher, "page=1");	// When sorting, forward to page 1
 %>
 		<table class="bordered">
 			<thead>
@@ -116,16 +117,19 @@
 				}  
 				currentPage = (pageid/total)+1;
 				
-				String query;
+				String query = "";
 				ResultSet rs;
 				
 				// Change query based on letter and order
 				String advancedsearch = request.getParameter("advancedsearch");
+				String browsegenre = request.getParameter("genre");
+				String title = request.getParameter("title");
 				String orderby = request.getParameter("orderby");
 				String letter = request.getParameter("letter");
 				String reverse = request.getParameter("reverse");
+				
 				if (advancedsearch == null){
-	         		// Show all books or beginning with a letter
+	         		// Search by title (first letter/all books)
 		         	if (letter != null && letter != ""){
 		          		if(letter.equals("all")){
 						    if(orderby == null){
@@ -147,15 +151,32 @@
 							}
 						}
 		         	}
-		         	else{	// SIMPLE SEARCH
-		         		query = "SELECT * FROM book WHERE title = '" + request.getParameter("title") + "' ORDER BY " + orderby;
+	         		// Browse by genre
+		         	else if (browsegenre != null && !browsegenre.equals("")){
+						query = "SELECT DISTINCT(book.isbn), book.title, book.year_published, book.publisher " +
+								"FROM (book LEFT JOIN genre_in_books ON book.isbn = genre_in_books.isbn) LEFT JOIN genre ON id = genre_id " +
+								"WHERE genre_name";
+		         		if (browsegenre.equals("Genreless")){
+		         			query += " IS NULL ";
+		         		}
+		         		else{
+							query += " = '" + browsegenre + "' AND genre_in_books.genre_id = genre.id AND genre_in_books.isbn = book.isbn ";
+		         		}
+						query += "ORDER BY " + orderby;		         			
+		         		if (reverse.equals("true")){
+							query += " DESC ";
+						}
+					}
+		         	// Search by simple generic title match
+		         	else if (title != null && !title.equals("")){
+		         		query = "SELECT * FROM book WHERE title = '" + title + "' ORDER BY " + orderby;
 		         		if (reverse.equals("true")){
 							query += " DESC ";
 						}
 		         	}
 				}
 				else{	// GENERATE ADVANCED SEARCH QUERY
-					String title = request.getParameter("title");
+					//String title = request.getParameter("title"); DUPLICATE VARIABLE
 					String year = request.getParameter("year");
 					String publisher = request.getParameter("publisher");
 					String author_first_name = request.getParameter("author_first_name");
@@ -244,12 +265,17 @@
 					//	Test print: out.println(query);
 				}
                 // Get the total query count to limit for pagination
-                String countQuery;
+                String countQuery = "";
                 ResultSet rsCount;
                 int queryCount = 0;
                 
                 if (advancedsearch == null){
-					countQuery = query.replace("*", "COUNT(*) AS total");
+                	if (letter != null && !letter.equals("") || title != null && !title.equals("")){
+						countQuery = query.replace("*", "COUNT(*) AS total");
+                	}
+                	else if (browsegenre != null && !browsegenre.equals("")){
+                		countQuery = query.replace("DISTINCT(book.isbn), book.title, book.year_published, book.publisher", "COUNT(DISTINCT(book.isbn)) AS total");
+	                }
                 }
                 else{
                 	countQuery = query.replace("DISTINCT(book.isbn), book.title, book.year_published, book.publisher", "COUNT(DISTINCT(book.isbn)) AS total");
@@ -285,7 +311,7 @@
                     String b_title = rs.getString("title");
                     String b_year = rs.getString("year_published");
                     String b_publisher = rs.getString("publisher");
-                    out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td><a href = moviepage.jsp?b_isbn="+ b_isbn + ">" + b_title + "</a></td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
+                    out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td><a href = bookpage.jsp?b_isbn="+ b_isbn + ">" + b_title + "</a></td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
                     
                     
                     
@@ -323,18 +349,17 @@
                 		}
         			}
                		out.print("</td><td>");
-%>            	    
-					<form action="booklist.jsp?<% out.println(request.getQueryString()); %>" method="post">
-						<input type="hidden" name="isbn" value=<% out.println(b_isbn);%> />               			
-              			<button type="submit" class="waves-effect waves-light btn" name="btn" value="default">
-              				<i class="material-icons left">
-              					shopping_cart
-              				</i>
-              				Add
-              			</button>
-              		</form>
+%>
+			<form
+				action="booklist.jsp?<% out.println(request.getQueryString()); %>" method="post">
+				<input type="hidden" name="isbn" value=<% out.println(b_isbn); %> />
+					<button type="submit" class="waves-effect waves-light btn" name="btn" value="default">
+						<i class="material-icons left"> shopping_cart </i>
+						Add
+					</button>
+			</form>
 
-<%               		out.print("</td></tr>");
+			<%               		out.print("</td></tr>");
 						if(singleAddBtn != null) //btnSubmit is the name of your button, not id of that button.
 						{
 							String isbn = request.getParameter("isbn");
@@ -345,24 +370,28 @@
                 }
                 out.println("</TABLE>");
                 //Limit data
-                out.println("Limit books per page: ");
-                out.println("<a href=\"booklist.jsp?page=" + (currentPage) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=5" + "&letter=" + request.getParameter("letter") + "\">5</a>");
-                out.println("<a href=\"booklist.jsp?page=" + (currentPage) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=15" + "&letter=" + request.getParameter("letter") + "\">15</a>");
-                out.println("<a href=\"booklist.jsp?page=" + (currentPage) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=25" + "&letter=" + request.getParameter("letter") + "\">25</a>");
-                out.println("<a href=\"booklist.jsp?page=" + (currentPage) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=50" + "&letter=" + request.getParameter("letter") + "\">50</a>");
+				String formatTotal = "total=" + request.getParameter("total");
+                out.println("Limit books per page: ");			
+                out.println("<a href=\"booklist.jsp?" + qstring.replace(formatTotal, "total=5") + "\">5</a>");		// qstring has page=1
+                out.println("<a href=\"booklist.jsp?" + qstring.replace(formatTotal, "total=15") + "\">15</a>");
+                out.println("<a href=\"booklist.jsp?" + qstring.replace(formatTotal, "total=25") + "\">25</a>");
+                out.println("<a href=\"booklist.jsp?" + qstring.replace(formatTotal, "total=50") + "\">50</a>");
                 // Pagination
                 // Disable previous button while on first page
                 out.println("<ul class=\"pagination\">");
+                String formatCurrentPage = "page=" + spageid;	// String version of page
+                String newPagePrev = "page=" + Integer.toString(currentPage-1);
+                String newPageForward = "page=" + Integer.toString(currentPage+1);
                 if(currentPage <= 1){
                     out.println("<li class=\"disabled\"><i class=\"material-icons\">chevron_left</i> Prev </li>");
                 }else{
-                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=" + (currentPage-1) + "&orderby=" + orderby + "&reverse=" + reverse + "&total=" + total + "&letter=" + letter + "\"><i class=\"material-icons\">chevron_left</i> Prev </a></li>");
+                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?" + request.getQueryString().replace(formatCurrentPage, newPagePrev) + "\"><i class=\"material-icons\">chevron_left</i> Prev </a></li>");
                 }
                 // Disable next button while on last page
                 if(currentPage >= Math.ceil(queryCount/total)){
                     out.println("<li class=\"disabled\"> Next <i class=\"material-icons\">chevron_right</i></li>");
                 }else{
-                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?page=" + (currentPage+1) + "&orderby=" + orderby + "&reverse=" + request.getParameter("reverse") + "&total=" + request.getParameter("total") + "&letter=" + request.getParameter("letter") + "\">Next <i class=\"material-icons\">chevron_right</i></a></li></ul>");
+                    out.println("<li class=\"waves-effect\"><a href=\"booklist.jsp?"  + request.getQueryString().replace(formatCurrentPage, newPageForward) +  "\">Next <i class=\"material-icons\">chevron_right</i></a></li></ul>");
                 }
                 
 

@@ -79,20 +79,28 @@
                 <div class="genre-search">
                     <h5 align="center">Browse books by genre</h5>
                         <%
-                            Connection c = DriverManager.getConnection(
-                            session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
-                            response.setContentType("text/html");               
-                            Class.forName("com.mysql.jdbc.Driver").newInstance();
-                            Statement statement = c.createStatement();
-
-                            String genreQuery = "SELECT genre_name FROM genre";
-                            ResultSet genres = statement.executeQuery(genreQuery);
-
+							Connection c = DriverManager.getConnection(
+							session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
+							response.setContentType("text/html");               
+							Class.forName("com.mysql.jdbc.Driver").newInstance();
+							Statement statement = c.createStatement();
+							
+							String genreQuery = "SELECT genre_name FROM genre";
+							ResultSet genres = statement.executeQuery(genreQuery);
+							
+						%>
+						<form action="booklist.jsp">
+							<input type="hidden" name="page" value="1" />
+							<input type="hidden" name="orderby" value="title" />
+							<input type="hidden" name="reverse" value="false" />
+							<input type="hidden" name="total" value="10" />
+						<%  
                             while(genres.next()){
-                                out.println("<a class=\"waves-effect waves-light btn genre-button\">" + genres.getString("genre_name") + "</a>");
+                                out.println("<button type=\"submit\" class=\"waves-effect waves-light btn genre-button\" name=\"genre\" value=\"" + genres.getString("genre_name") + "\">" + genres.getString("genre_name") + "</button>");
                             }
-                            out.println("<a class=\"waves-effect waves-light btn genre-button\">" + "No Genre" + "</a>");
-                        %>               
+                            out.println("<button type=\"submit\" class=\"waves-effect waves-light btn genre-button\" name=\"genre\" value=\"Genreless\">Genreless</button>");
+                        %>
+                        </form>
                 </div>
             </div>
     </div>
