@@ -8,17 +8,6 @@
  java.lang.Math"
 %>
   
-<%
-	response.setHeader("Cache-Control","no-cache");
-	response.setHeader("Cache-Control","no-store");
-	response.setHeader("Pragma","no-cache");
-	response.setDateHeader ("Expires", 0);
-	if(session.getAttribute("email") == null){
-		session.removeAttribute("email");
-		session.invalidate();
-		response.sendRedirect("index.jsp");
-	}
-%>
 <%@include file="navbar.jsp"%>  
     <div class="container">
         <div>
@@ -79,15 +68,15 @@
                 <div class="genre-search">
                     <h5 align="center">Browse books by genre</h5>
                         <%
-							Connection c = DriverManager.getConnection(
-							session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
-							response.setContentType("text/html");               
-							Class.forName("com.mysql.jdbc.Driver").newInstance();
-							Statement statement = c.createStatement();
+                        	try {
+								Connection c = DriverManager.getConnection(
+								session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
+								response.setContentType("text/html");               
+								Class.forName("com.mysql.jdbc.Driver").newInstance();
+								Statement statement = c.createStatement();
 							
-							String genreQuery = "SELECT genre_name FROM genre ORDER BY genre_name ASC";
-							ResultSet genres = statement.executeQuery(genreQuery);
-							
+								String genreQuery = "SELECT genre_name FROM genre ORDER BY genre_name ASC";
+								ResultSet genres = statement.executeQuery(genreQuery);
 						%>
 						<form action="booklist.jsp">
 							<input type="hidden" name="page" value="1" />
@@ -95,10 +84,14 @@
 							<input type="hidden" name="reverse" value="false" />
 							<input type="hidden" name="total" value="10" />
 						<%  
-                            while(genres.next()){
-                                out.println("<button type=\"submit\" class=\"waves-effect waves-light btn genre-button\" name=\"genre\" value=\"" + genres.getString("genre_name") + "\">" + genres.getString("genre_name") + "</button>");
-                            }
-                            out.println("<button type=\"submit\" class=\"waves-effect waves-light btn genre-button\" name=\"genre\" value=\"Genreless\">Genreless</button>");
+	                            while(genres.next()){
+	                                out.println("<button type=\"submit\" class=\"waves-effect waves-light btn genre-button\" name=\"genre\" value=\"" + genres.getString("genre_name") + "\">" + genres.getString("genre_name") + "</button>");
+	                            }
+	                            out.println("<button type=\"submit\" class=\"waves-effect waves-light btn genre-button\" name=\"genre\" value=\"Genreless\">Genreless</button>");
+                        	}
+                        	catch (NullPointerException ex){
+                        		
+                        	}
                         %>
                         </form>
                 </div>

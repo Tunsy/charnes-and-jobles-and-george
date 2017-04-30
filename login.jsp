@@ -1,15 +1,16 @@
-<%@page import="java.sql.*,
+<%@page
+	import="java.sql.*,
  javax.sql.*,
  java.io.IOException,
  javax.servlet.http.*,
  javax.servlet.*,
  java.util.*,
- cart.ItemCounter"
-%>
+ cart.ItemCounter"%>
 
-<h1 align="center"> Charnes & Jobles & George</h1>
+<h1 align="center">Charnes & Jobles & George</h1>
 
-<%    
+<%
+
     String logout = request.getParameter("logout");
     String login = request.getParameter("login");
 
@@ -37,20 +38,29 @@
         Class.forName("com.mysql.jdbc.Driver").newInstance();       
         Connection c = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 
-        String query = "SELECT * FROM customers WHERE customers.email = ? AND customers.emailpw = ?";
+        String query = "SELECT email, emailpw FROM customers WHERE customers.email = ?";
         PreparedStatement statement = c.prepareStatement(query);
         statement.setString(1, email);
-        statement.setString(2, password);
         ResultSet rs = statement.executeQuery();
+        
         if (!rs.isBeforeFirst()) {
             request.setAttribute("login", "-1");
-        }else{
-            request.setAttribute("login", "1");
+            session.removeAttribute("email");
+        }
+        else{
+      		rs.next();
+			if (!password.equals(rs.getString(2))){
+				request.setAttribute("login", "-1");
+				session.removeAttribute("email");
+			}
+			else{
+            	request.setAttribute("login", "1");
+			}
         }
     }
     
 
-    if(request.getAttribute("login").equals("1")){
+    if(request.getAttribute("login") != null && request.getAttribute("login").equals("1")){
     	response.sendRedirect("main.jsp");
     }else{
         response.sendRedirect("index.jsp?login=" + request.getAttribute("login"));

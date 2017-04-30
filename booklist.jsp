@@ -11,18 +11,6 @@
 <html>
 <%@include file="css.html"%>
 
-<%
-	response.setHeader("Cache-Control","no-cache");
-	response.setHeader("Cache-Control","no-store");
-	response.setHeader("Pragma","no-cache");
-	response.setDateHeader ("Expires", 0);
-	if(session.getAttribute("email") == null){
-		session.removeAttribute("email");
-		session.invalidate();
-		response.sendRedirect("index.jsp");
-	}
-%>
-
 <%@include file="navbar.jsp"%>
 <body>
 	<div class="container">
