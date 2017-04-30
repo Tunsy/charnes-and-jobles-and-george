@@ -1,23 +1,23 @@
-<%@page import="java.sql.*,
+<%@page
+	import="java.sql.*,
  javax.sql.*,
  java.io.IOException,
  javax.servlet.http.*,
  javax.servlet.*,
  java.lang.Math,
  java.util.*,
- cart.ItemCounter"
-%>
+ cart.ItemCounter"%>
 
 <html>
 <%@include file="navbar.jsp"%>
-<%@include file="css.html"%>  
-  <body>
-    <div class="container">
-        <h1 align="center"> Charnes & Jobles & George</h1>
-        <div class="row">
-            <div>
-              <ul class="collection with-header">
-                 <%
+<%@include file="css.html"%>
+<body>
+	<div class="container">
+		<h1 align="center">Charnes & Jobles & George</h1>
+		<div align="center" class="row">
+			<div>
+				<ul class="collection with-header">
+					<%
                  
 					String qstring = request.getQueryString();
                     String isbn = request.getParameter("b_isbn");
@@ -97,49 +97,43 @@
                             
                             out.println("<li class=\"collection-item\">Year published: " + year + "</li>");
                             out.println("<li class=\"collection-item\">ISBN: " + isbn + "</li>");
-                        }
-                        
-                       	// 
-                    	if(request.getParameter("btn") != null) //btnSubmit is the name of your button, not id of that button.
-                    	{
-							ArrayList<ItemCounter> cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
-							boolean duplicate = false;
-							if(cart.size() == 0)
+%>
+					<script>
+						$(document).ready(function() {
+							$('select').material_select();
+						});
+					</script>
+
+					<%
+							String btn = request.getParameter("btn");
+							if(btn != null) //btnSubmit is the name of your button, not id of that button.
 							{
-								ItemCounter book = new ItemCounter(isbn);
-								cart.add(book);
-							}
-							else
-							{
-								ItemCounter book = new ItemCounter(isbn);
 								
+								isbn = request.getParameter("btn").trim();	// Unique button value for each form
+								ArrayList<ItemCounter> cart = new ArrayList<ItemCounter>(); 
+								cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
+								boolean duplicate = false;
+								int itemquantity = Integer.parseInt(request.getParameter("item_quantity"));
+								ItemCounter book = new ItemCounter(btn);
 								for(int i = 0; i < cart.size(); i++)
 								{
 									if(cart.get(i).isbn().equals(book.isbn()))
 									{
 										duplicate = true;
-										cart.get(i).increment();
+										cart.get(i).addQuantity(itemquantity);
 										break;
 									}
 								}
 								
 								if(!duplicate)
 								{
+									book.setQuantity(itemquantity);
 									cart.add(book);
 								}
+
+								btn = null;
 							}
-                    	}                    	
-                        
-                        //for(int i = 0; i < authors.size(); i++){
-                        //    out.print(authors.get(i));
-                        //    if(i < authors.size() - 1)
-                        //      out.print(", ");
-                        //}
-                        //out.print("</li>");
-                        //out.println("<li class=\"collection-item\">Publisher: " + publisher + "</li>");
-                        //out.println("<li class=\"collection-item\">Genres: " + genre + "</li>");
-                        //out.println("<li class=\"collection-item\">Year published: " + year + "</li>");
-                        //out.println("<li class=\"collection-item\">ISBN: " + isbn + "</li>");
+	                } 
 
                     } catch (SQLException ex) {
                         while (ex != null) {
@@ -153,19 +147,33 @@
                                 + "<P>SQL error in doGet: " + ex.getMessage() + "</P></BODY></HTML>");
                         return;
                     }
-                  %>                   
-              </ul>
-              		<form action="bookpage.jsp?<% out.println(qstring); %>" method="post">
-						<input type="hidden" name="isbn" value=<% out.println(isbn);%> />               			
-              			<button type="submit" class="waves-effect waves-light btn" name="btn" value="default">
-              				<i class="material-icons left">
-              					shopping_cart
-              				</i>
-              				Add to shopping cart
-              			</button>
-              		</form>
-            </div>
-        </div>
-      </div>
-    </body>
-  </html>
+%>
+				</ul>
+				<form
+					action="bookpage.jsp?<% out.println(request.getQueryString()); %>"
+					method="post">
+					<input type="hidden" name="isbn" value="<% out.println(isbn);%>" />
+					<div class="input-field" style="width: 50px;">
+						<select name="item_quantity">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+						</select> <label>Qty:</label>
+					</div>
+					<button type="submit" class=" waves-effect waves-light btn"
+						name="btn" value="<% out.println(isbn);%>">
+						<i class="material-icons left"> shopping_cart </i>
+						Add to Shopping
+						Cart
+					</button>
+				</form>
+			</div>
+		</div>
+</body>
+</html>

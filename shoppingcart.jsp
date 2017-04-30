@@ -141,8 +141,7 @@
 
 
                 for (int i = 0; i < cart.size(); i++) {
-                	String b_isbn = cart.get(i).isbn();                   
-                    
+                	String b_isbn = cart.get(i).isbn().trim();
                 	book_statement.setInt(1, Integer.parseInt(b_isbn));
             	    ResultSet rs = book_statement.executeQuery();
             	    
@@ -238,7 +237,7 @@
 
             catch (java.lang.Exception ex) {
                 out.println("<HTML>" + "<HEAD><TITLE>" + "BooksDB: Error" + "</TITLE></HEAD>\n<BODY>"
-                        + "<P>SQL error in doGet: " + ex.getMessage() + "</P></BODY></HTML>");
+                        + "<P>SQL error in doGet: " + ex.getClass().getSimpleName() + ex.getMessage() + "</P></BODY></HTML>");
                 return;
             }
         %>
