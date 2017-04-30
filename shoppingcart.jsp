@@ -110,7 +110,36 @@
                 ArrayList<ItemCounter> cart = new ArrayList<ItemCounter>();
                 cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
                 
-                
+                out.println("2");
+                String removeItemBtn = request.getParameter("removeItem");
+                if(removeItemBtn != null){
+                    ItemCounter book = new ItemCounter(request.getParameter("isbn"));
+                    for(int i = 0; i < cart.size(); i++)
+                    {
+                        if(cart.get(i).isbn().equals(book.isbn()))
+                        {
+                            cart.get(i).setQuantity(0);
+                            cart.remove(i);
+                        }
+                    }
+                }
+
+                String updateItemBtn = request.getParameter("updateItem");
+                if(updateItemBtn != null){
+                    ItemCounter book = new ItemCounter(request.getParameter("isbn"));
+                    for(int i = 0; i < cart.size(); i++)
+                    {
+                        if(cart.get(i).isbn().equals(book.isbn()))
+                        {
+                            out.println("0");
+                            int itemquantity = Integer.parseInt(request.getParameter("item_quantity"));
+                            cart.get(i).setQuantity(itemquantity);
+                        }
+                    }
+                }
+
+
+
                 for (int i = 0; i < cart.size(); i++) {
                 	String b_isbn = cart.get(i).isbn();                   
                     
@@ -168,7 +197,36 @@
         			}
             	    
             	    out.println("</td><td>$10.00</td>");
-            	    out.println("<td>" + cart.get(i).quantity() + "</td>");
+                    %>
+                    <script>
+                        $(document).ready(function() {
+                            $('select').val(<% out.println(cart.get(i).quantity()); %>);
+                            $('select').material_select();
+                        });
+                    </script>
+                    <form action="shoppingcart.jsp?<% out.println(request.getQueryString()); %>" method="post">
+                       <input type="hidden" name="isbn" value=<% out.println(b_isbn); %> /> 
+                       <td>
+                            <div class="input-field">
+                                <select name="item_quantity">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                </select>
+                                <label>Qty:</label>
+                            </div>
+                        </td>
+                        <td><button type="submit" class="btn-floating red" name="removeItem"><i class="material-icons">delete_forever</i></a></td>
+                        <td><button type="submit" class="btn-floating" name="updateItem"><i class="material-icons">cached</i></a></td>
+                    </form>
+
+                    <%
                 }
                		 		
             } catch (SQLException ex) {
