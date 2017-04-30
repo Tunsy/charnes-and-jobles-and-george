@@ -58,7 +58,7 @@
 
                             out.println("<li class=\"collection-item\">Author ID: " + authorid + "</li>");
                             out.println("<li class=\"collection-item\">Birthday: "+ birth + "</li>");
-                            out.println("<li class=\"collection-item\">Photo URL: "+ url + "</li>");   
+                            out.println("<li class=\"collection-item\" align=\"center\"><img src=\"" + url + "\" alt=\"Not a real image\" style=\"width:128px;height:128px;\"></li>");   
                         }
                     } catch (SQLException ex) {
                         while (ex != null) {

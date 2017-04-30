@@ -298,7 +298,7 @@
 	                String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id ORDER BY genre_name ASC";
 	                PreparedStatement genre_statement = c.prepareStatement(genre_query);
 	        	    
-	                String singleAddBtn = request.getParameter("btn");
+	                String btn = request.getParameter("btn");
 	
 	                // Iterate through each row of rs
 	                while (rs.next()) {
@@ -350,46 +350,39 @@
 	        			}
 	               		out.print("</td><td>");
 	%>
-					<script>
-						$(document).ready(function() {
-						    $('select').material_select();
-						  });
-					</script>
-							<form
-								action="booklist.jsp?<% out.println(request.getQueryString()); %>"
-								method="post">
-								<input type="hidden" name="isbn" value=<% out.println(b_isbn); %> />
-								<div class="input-field">
-									<select name="item_quantity">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
-										<option value="7">7</option>
-										<option value="8">8</option>
-										<option value="9">9</option>
-									</select>
-									<label>Qty:</label>
-								</div>
-								<button type="submit"
-									class=" waves-effect waves-light btn"
-									name="btn"
-									value="default">
-									<i class="material-icons left"> shopping_cart </i>
-								</button>
-							</form>
+			<script>
+				$(document).ready(function() {
+					$('select').material_select();
+				});
+			</script>
 
-			<%              out.print("</td></tr>");
-							String isbn = b_isbn;
-							if(singleAddBtn != null) //btnSubmit is the name of your button, not id of that button.
+			<%              
+							out.println("<form ");
+							out.print("action=\"booklist.jsp?" + request.getQueryString() + "\"");
+							out.print("method=\"post\">");
+							out.print("<input type=\"hidden\" name=\"isbn\" value=\"" + b_isbn + "\"/>");
+							out.print("<div class=\"input-field\">");
+							out.print("<select name=\"item_quantity\">");
+							out.print("<option value=\"1\" selected>1</option>");
+							for (int i = 2; i <= 9; i++){
+								out.print("<option value=\"" + i + "\">" + i + "</option>");
+							}
+							out.print("</select>");
+							out.print("<label>Qty:</label>");
+							out.print("</div>");
+							out.print("<button type=\"submit\" class=\" waves-effect waves-light btn\"	name=\"btn\" value=\"" + b_isbn + "\"/>");
+							out.print("<i class=\"material-icons left\"> shopping_cart </i>");
+							out.print("</button></form>");
+							out.print("</td></tr>");
+							
+							if(btn != null) //btnSubmit is the name of your button, not id of that button.
 							{
+								
+								String isbn = request.getParameter("btn").trim();	// Unique button value for each form
 								ArrayList<ItemCounter> cart = new ArrayList<ItemCounter>(); 
 								cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
 								boolean duplicate = false;
 								int itemquantity = Integer.parseInt(request.getParameter("item_quantity"));
-								out.println(itemquantity);
 								ItemCounter book = new ItemCounter(isbn);
 								
 								for(int i = 0; i < cart.size(); i++)
@@ -408,7 +401,7 @@
 									cart.add(book);
 								}
 
-								singleAddBtn = null;
+								btn = null;
 							}
 	                }
 	                out.println("</TABLE>");
@@ -456,8 +449,7 @@
             }
  
 %>
-
-
-			</div>
+		
+	</div>
 </body>
 </html>
