@@ -197,15 +197,17 @@
             	    
             	    out.println("</td><td>$10.00</td>");
                     %>
+                    <!--
                     <script>
                         $(document).ready(function() {
                             $('select').val(<% out.println(cart.get(i).quantity()); %>);
                             $('select').material_select();
                         });
                     </script>
+                    -->
                     <form action="shoppingcart.jsp?<% out.println(request.getQueryString()); %>" method="post">
                        <input type="hidden" name="isbn" value=<% out.println(b_isbn); %> /> 
-                       <td>
+                       <!--<td>
                             <div class="input-field">
                                 <select name="item_quantity">
                                     <option value="1">1</option>
@@ -220,7 +222,8 @@
                                 </select>
                                 <label>Qty:</label>
                             </div>
-                        </td>
+                        </td>-->
+                        <td><% out.println(cart.get(i).quantity()); %></td>
                         <td><button type="submit" class="btn-floating red" name="removeItem"><i class="material-icons">delete_forever</i></a></td>
                         <td><button type="submit" class="btn-floating" name="updateItem"><i class="material-icons">cached</i></a></td>
                     </form>
