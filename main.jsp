@@ -10,24 +10,10 @@
   
 <%@include file="navbar.jsp"%>  
     <div class="container">
-        <div>
-			<p>
-				<form action="booklist.jsp">
-					<input type="hidden" name="page" value="1" />
-					<input type="hidden" name="orderby" value="title" />
-					<input type="hidden" name="reverse" value="false" />
-					<input type="hidden" name="letter" value="all" />
-					<input type="hidden" name="total" value="10" />
-					<button type="submit" class="btn-link">
-	            		List of all books						
-					</button>
-				</form>
-           	</p>
-		</div>
 		<div>
             <nav class="navcontainer">
                 <div class="nav-wrapper bluenav">
-                    <form action="booklist.jsp" class="search-container">
+                    <form action="booklist.jsp" class="search-container center-align">
 						<input type="hidden" name="page" value="1" />
 						<input type="hidden" name="orderby" value="title" />
 						<input type="hidden" name="reverse" value="false" />
@@ -43,13 +29,14 @@
 								close
 							</i>
                         </div>
-                        <button class="btn waves-effect waves-light" type="submit">
-                        	Search
-                        </button>
-						<div class="advancedsearch">
-		                	<a href="advancedsearch.jsp" font="black">Advanced Search</a>
-						</div>
+                        <div id="searchBtn">
+                            <button class="btn waves-effect waves-light" type="submit">
+                            	Search
+                            </button>
+		                	<a href="advancedsearch.jsp" id="advancedsearch" style="margin-left: 900px; margin-right: 0px">Advanced Search</a>
+                        </div>  
                     </form>
+
                 </div>
             </nav>
             <br>

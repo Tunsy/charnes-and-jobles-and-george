@@ -4,13 +4,8 @@
 	margin-right: auto;
 }
 
-.advancedsearch {
-	margin-left: 20%;
-	margin-top: -50px;
-}
-
-.advancedsearch>a {
-	color: #2196f3;
+#advancedsearch{
+    color: #2196f3;
 }
 
 .bluenav {
