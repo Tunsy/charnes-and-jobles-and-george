@@ -12,9 +12,8 @@
 <%@include file="css.html"%>  
   <body>
     <div class="container">
-        <h1 align="center"> Charnes & Jobles & George</h1>
         <div class="row">
-            <div>
+            <div class="col s8">
               <ul class="collection with-header">
                  <%
                     try {               
@@ -58,7 +57,7 @@
 
                             out.println("<li class=\"collection-item\">Author ID: " + authorid + "</li>");
                             out.println("<li class=\"collection-item\">Birthday: "+ birth + "</li>");
-                            out.println("<li class=\"collection-item\" align=\"center\"><img src=\"" + url + "\" alt=\"Not a real image\" style=\"width:128px;height:128px;\"></li>");   
+                            out.println("<li class=\"collection-item\">URL: " + url + "</li>");   
                         }
                     } catch (SQLException ex) {
                         while (ex != null) {
@@ -74,6 +73,9 @@
                     }
                   %>                   
               </ul>
+            </div>
+            <div class="col s4 sidepic">
+                <% out.println("<img src=\"test\" alt=\"Not a real image\" style=\"width:256px;height:256px;\">"); %>   
             </div>
         </div>
       </div>

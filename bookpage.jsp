@@ -13,9 +13,8 @@
 <%@include file="css.html"%>
 <body>
 	<div class="container">
-		<h1 align="center">Charnes & Jobles & George</h1>
-		<div align="center" class="row">
-			<div>
+		<div class="row">
+			<div class="col s8">
 				<ul class="collection with-header">
 					<%
                  
@@ -51,7 +50,7 @@
                             publisher = rs.getString("publisher");
 
                             
-                            out.println("<li class=\"collection-header\"><h4>" + title + "<h4></li>");
+                            out.println("<li class=\"collection-header\"><h5>" + title + "<h></li>");
                             out.println("<li class=\"collection-item\">List of authors: <br>");
                             
                         	while(author_rs.next())
@@ -151,10 +150,10 @@
 				</ul>
 				<form
 					action="bookpage.jsp?<% out.println(request.getQueryString()); %>"
-					method="post">
+					method="post" class="center-align">
 					<input type="hidden" name="isbn" value="<% out.println(isbn);%>" />
-					<div class="input-field" style="width: 50px;">
-						<select name="item_quantity">
+					<div class="input-field" style="width: 50px;margin-left: auto;margin-right: auto;">
+						<select name="item_quantity" class="center-align">
 							<option value="1">1</option>
 							<option value="2">2</option>
 							<option value="3">3</option>
@@ -174,6 +173,9 @@
 					</button>
 				</form>
 			</div>
+            <div class="col s4 sidepic">
+                <% out.println("<img src=\"test\" alt=\"Not a real image\" style=\"width:256px;height:256px;\">"); %>   
+            </div>
 		</div>
 </body>
 </html>
