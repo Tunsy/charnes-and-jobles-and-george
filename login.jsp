@@ -37,8 +37,10 @@
         session.setAttribute("sqlURL", loginUrl);
         Class.forName("com.mysql.jdbc.Driver").newInstance();       
         Connection c = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-
-        String query = "SELECT email, emailpw FROM customers WHERE customers.email = ?";
+		
+        
+        
+        String query = "SELECT email, emailpw, id FROM customers WHERE customers.email = ?";
         PreparedStatement statement = c.prepareStatement(query);
         statement.setString(1, email);
         ResultSet rs = statement.executeQuery();
@@ -55,6 +57,7 @@
 			}
 			else{
             	request.setAttribute("login", "1");
+            	session.setAttribute("customerID", rs.getString(3));
 			}
         }
     }
