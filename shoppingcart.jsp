@@ -50,21 +50,6 @@
 							</th>
 							<th style="width: 400px">Title <a
 								href=<%
-               					out.println("\"shoppingcart.jsp?");
-               					if (request.getParameter("reverse").equals("true")){
-               						out.println(qstring.replace("reverse=true","reverse=false").replace(replacer, "orderby=title"));	// Replacer = "orderby=attribute"
-               						out.println("\">");
-               						out.println("<i class=\"material-icons\">arrow_drop_down</i>");
-               					}
-               					else if (request.getParameter("reverse").equals("false")){
-               						out.println(qstring.replace("reverse=false","reverse=true").replace(replacer, "orderby=title"));	// Replacer = "orderby=attribute"
-               						out.println("\">");
-               						out.println("<i class=\"material-icons\"> arrow_drop_up </i>");
-               					}
-               				%></a>
-							</th>
-							<th style="width: 400px">Title <a
-								href=<%
            					out.println("\"shoppingcart.jsp?");
            					if (request.getParameter("reverse").equals("true")){
            						out.println(qstring.replace("reverse=true","reverse=false").replace(replacer, "orderby=title"));	// Replacer = "orderby=attribute"
@@ -116,144 +101,149 @@
 					</thead>
 					<%
                 
-                String query = "SELECT * FROM book WHERE isbn = ?";
-                PreparedStatement book_statement = c.prepareStatement(query);
-                
-                String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id ORDER BY last_name, first_name ASC";
-                PreparedStatement author_statement = c.prepareStatement(author_query);
-                
-                String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id ORDER BY genre_name ASC";
-                PreparedStatement genre_statement = c.prepareStatement(genre_query);
-                
-                ArrayList<ItemCounter> cart = new ArrayList<ItemCounter>();
-                cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
-                
-                out.println("Test: 2");
-                String removeItemBtn = request.getParameter("removeItem");
-                if(removeItemBtn != null){
-                    ItemCounter book = new ItemCounter(request.getParameter("isbn"));
-                    for(int i = 0; i < cart.size(); i++)
-                    {
-                        if(cart.get(i).isbn().equals(book.isbn()))
-                        {
-                            cart.get(i).setQuantity(0);
-                            cart.remove(i);
-                        }
-                    }
-                }
-                String updateItemBtn = request.getParameter("updateItem");
-                if(updateItemBtn != null){
-                    ItemCounter book = new ItemCounter(request.getParameter("isbn"));
-                    for(int i = 0; i < cart.size(); i++)
-                    {
-                        if(cart.get(i).isbn().equals(book.isbn()))
-                        {
-                            out.println("Test: 0");
-                            int itemquantity = Integer.parseInt(request.getParameter("item_quantity"));
-                            cart.get(i).setQuantity(itemquantity);
+	                String query = "SELECT * FROM book WHERE isbn = ?";
+	                PreparedStatement book_statement = c.prepareStatement(query);
+	                
+	                String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id ORDER BY last_name, first_name ASC";
+	                PreparedStatement author_statement = c.prepareStatement(author_query);
+	                
+	                String genre_query = "SELECT genre_name FROM book, genre, genre_in_books WHERE book.isbn = ? AND book.isbn = genre_in_books.isbn AND genre_in_books.genre_id = genre.id ORDER BY genre_name ASC";
+	                PreparedStatement genre_statement = c.prepareStatement(genre_query);
+	                
+	                ArrayList<ItemCounter> cart = new ArrayList<ItemCounter>();
+	                cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
+	                
+	                String removeItemBtn = request.getParameter("removeItem");
+	                if(removeItemBtn != null){
+	                    ItemCounter book = new ItemCounter(request.getParameter("isbn"));
+	                    for(int i = 0; i < cart.size(); i++)
+	                    {
+	                        if(cart.get(i).isbn().equals(book.isbn()))
+	                        {
+	                            cart.get(i).setQuantity(0);
+	                            cart.remove(i);
+	                        }
+	                    }
+	                }
+	                String updateItemBtn = request.getParameter("updateItem");
+	                out.println("Test updateItemBtn = " + updateItemBtn);
+	                if(updateItemBtn != null){
+	                    ItemCounter book = new ItemCounter(request.getParameter("isbn"));
+	                    for(int i = 0; i < cart.size(); i++)
+	                    {
+	                        if(cart.get(i).isbn().equals(book.isbn()))
+	                        {
+	                            int itemquantity = Integer.parseInt(request.getParameter("item_quantity"));
+	                            cart.get(i).setQuantity(itemquantity);
+	
+	                        }
+	                    }
+	                }
+	                for(int i = 0; i < cart.size(); i++)
+	                {
+                       	String b_isbn = cart.get(i).isbn().trim();
+                       	book_statement.setInt(1, Integer.parseInt(b_isbn));
+                   	    ResultSet rs = book_statement.executeQuery();
+                   	    
+                   	    
+                       	author_statement.setInt(1, Integer.parseInt(b_isbn));
+                   	    ResultSet author_rs = author_statement.executeQuery();
+                   	    
+                   	    genre_statement.setInt(1, Integer.parseInt(b_isbn));
+                   	    ResultSet genre_rs = genre_statement.executeQuery();
+                           
+                   	    rs.next();
+                           String b_title = rs.getString("title");
+                           String b_year = rs.getString("year_published");
+                           String b_publisher = rs.getString("publisher");
+                           out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td><a href = bookpage.jsp?b_isbn="+ b_isbn + ">" + b_title + "</a></td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
+                           
+                           
+                           
+                           while (author_rs.next())
+                           {
+                           	String a_author_id = author_rs.getString("author_id");
+                           	String a_firstName = author_rs.getString("first_name");
+                           	String a_lastName = author_rs.getString("last_name");
+                           	out.println("<a href = authorpage.jsp?author_id=" + a_author_id + ">" + a_firstName + " " + a_lastName + "</a>");
+                           	if(!author_rs.isLast())
+                           	{
+                           		//out.println(", ");
+                           		out.println("<br>");
+                           	}
+                           	
+                           }
+                           
+                   	    out.println("</td>");
+                           
+                   	    out.println("<td>");
 
-                        }
+                   	    
+                   	    if (!genre_rs.isBeforeFirst() ) {    
+               			    out.println("None listed"); 
+               			}
+               			else {
+               				out.println("<br>"); 
+                           	while(genre_rs.next()) // 
+                       		{
+                           		String genre = genre_rs.getString("genre_name");
+                           		out.println(genre);
+                           		if(!genre_rs.isLast())
+                           		{
+                           			out.println("<br>");
+                           		}
+                       		}
+               			}
+                   	    
+                   	    out.println("</td><td>$10.00</td>");
+                           %>
+						<!--
+	                            <script>
+	                                $(document).ready(function() {
+	                                    $('select').val(<% out.println(cart.get(i).quantity()); %>);
+	                                    $('select').material_select();
+	                                });
+	                            </script>
+	                            -->
+						<form
+							action="shoppingcart.jsp?<% out.println(request.getQueryString()); %>"
+							method="post">
+							<input type="hidden" name="isbn" value=<% out.println(b_isbn); %> />
+							<!--<td>
+	                                    <div class="input-field">
+	                                        <select name="item_quantity">
+	                                            <option value="1">1</option>
+	                                            <option value="2">2</option>
+	                                            <option value="3">3</option>
+	                                            <option value="4">4</option>
+	                                            <option value="5">5</option>
+	                                            <option value="6">6</option>
+	                                            <option value="7">7</option>
+	                                            <option value="8">8</option>
+	                                            <option value="9">9</option>
+	                                        </select>
+	                                        <label>Qty:</label>
+	                                    </div>
+	                                </td>-->
+							<td>
+								<% 
+								out.println(cart.get(i).quantity());
+								itemCount +=cart.get(i).quantity(); 
+								%>
+							</td>
+							<td><button type="submit" class="btn-floating red"
+									name="removeItem">
+									<i class="material-icons">delete_forever</i></a>
+								</button></td>
+							<td><button type="submit" class="btn-floating"
+									name="updateItem">
+									<i class="material-icons">cached</i></a>
+								</button></td>
+						</form>
+	
+						<%
+	                    }
 
-                        	String b_isbn = cart.get(i).isbn().trim();
-                        	book_statement.setInt(1, Integer.parseInt(b_isbn));
-                    	    ResultSet rs = book_statement.executeQuery();
-                    	    
-                    	    
-                        	author_statement.setInt(1, Integer.parseInt(b_isbn));
-                    	    ResultSet author_rs = author_statement.executeQuery();
-                    	    
-                    	    genre_statement.setInt(1, Integer.parseInt(b_isbn));
-                    	    ResultSet genre_rs = genre_statement.executeQuery();
-                            
-                    	    rs.next();
-                            String b_title = rs.getString("title");
-                            String b_year = rs.getString("year_published");
-                            String b_publisher = rs.getString("publisher");
-                            out.println("<tr>" + "<td>" + b_isbn + "</td>" + "<td><a href = bookpage.jsp?b_isbn="+ b_isbn + ">" + b_title + "</a></td>" + "<td>" + b_publisher + "</td>" + "<td>" + b_year + "</td>" + "<td style=\"width:200px\">");
-                            
-                            
-                            
-                            while (author_rs.next())
-                            {
-                            	String a_author_id = author_rs.getString("author_id");
-                            	String a_firstName = author_rs.getString("first_name");
-                            	String a_lastName = author_rs.getString("last_name");
-                            	out.println("<a href = authorpage.jsp?author_id=" + a_author_id + ">" + a_firstName + " " + a_lastName + "</a>");
-                            	if(!author_rs.isLast())
-                            	{
-                            		//out.println(", ");
-                            		out.println("<br>");
-                            	}
-                            	
-                            }
-                            
-                    	    out.println("</td>");
-                            
-                    	    out.println("<td>");
-
-                    	    
-                    	    if (!genre_rs.isBeforeFirst() ) {    
-                			    out.println("None listed"); 
-                			}
-                			else {
-                				out.println("<br>"); 
-                            	while(genre_rs.next()) // 
-                        		{
-                            		String genre = genre_rs.getString("genre_name");
-                            		out.println(genre);
-                            		if(!genre_rs.isLast())
-                            		{
-                            			out.println("<br>");
-                            		}
-                        		}
-                			}
-                    	    
-                    	    out.println("</td><td>$10.00</td>");
-                            %>
-					<!--
-                            <script>
-                                $(document).ready(function() {
-                                    $('select').val(<% out.println(cart.get(i).quantity()); %>);
-                                    $('select').material_select();
-                                });
-                            </script>
-                            -->
-					<form
-						action="shoppingcart.jsp?<% out.println(request.getQueryString()); %>"
-						method="post">
-						<input type="hidden" name="isbn" value=<% out.println(b_isbn); %> />
-						<!--<td>
-                                    <div class="input-field">
-                                        <select name="item_quantity">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                        </select>
-                                        <label>Qty:</label>
-                                    </div>
-                                </td>-->
-						<td>
-							<% out.println(cart.get(i).quantity()); itemCount +=cart.get(i).quantity(); %>
-						</td>
-						<td><button type="submit" class="btn-floating red"
-								name="removeItem">
-								<i class="material-icons">delete_forever</i></a>
-							</button></td>
-						<td><button type="submit" class="btn-floating"
-								name="updateItem">
-								<i class="material-icons">cached</i></a>
-							</button></td>
-					</form>
-
-					<%
-                    }
-                }
                     } catch (SQLException ex) {
                         while (ex != null) {
                             System.out.println("SQL Exception:  " + ex.getMessage());
@@ -288,7 +278,8 @@
 
 				<!-- Modal Structure -->
 				<div id="checkoutModal" class="modal">
-					<form class="col s12 center-align" action="" method="post">
+					<form class="col s12 center-align" action="checkout.jsp"
+						method="post">
 						<div class="modal-content">
 							<h4>Enter Payment Info</h4>
 							<div class="row">

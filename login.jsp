@@ -57,7 +57,7 @@
 			}
 			else{
             	request.setAttribute("login", "1");
-            	session.setAttribute("customerID", rs.getString(3));
+            	session.setAttribute("customerID", rs.getInt(3));
 			}
         }
     }
