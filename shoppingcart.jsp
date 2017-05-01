@@ -284,31 +284,31 @@
 							<div class="row">
 								<div class="input-field col s4">
 									<input id="firstname" type="text" name="firstname"
-										class="validate"> <label for="firstname">First
+										class="validate" required> <label for="firstname">First
 										name</label>
 								</div>
 								<div class="input-field col s4">
 									<input id="lastname" type="text" name="lastname"
-										class="validate"> <label for="lastname">Last
+										class="validate" required> <label for="lastname">Last
 										name</label>
 								</div>
 								<div class="input-field col s4">
 									<input placeholder="panteater@uci.edu" id="email" type="text"
-										name="email" class="validate"> <label for="email">Email</label>
+										name="email" class="validate" required> <label for="email">Email</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="input-field col s6">
 									<input id="address" type="text" name="address" class="validate">
-									<label for="address">Address</label>
+									<label for="address" required>Address</label>
 								</div>
 								<div class="input-field col s6">
 									<input id="ccn" type="text" name="ccn" class="validate">
-									<label for="ccn">Credit Card Number</label>
+									<label for="ccn" required>Credit Card Number</label>
 								</div>
 								<div class="input-field col s7">
 									<input id="expdate" type="text" name="expdate" class="validate">
-									<label for="expdate">Expiration Date (yy-mm-dd)</label>
+									<label for="expdate" required>Expiration Date (yy-mm-dd)</label>
 								</div>
 							</div>
 
