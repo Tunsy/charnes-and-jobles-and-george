@@ -127,19 +127,15 @@
 	                        }
 	                    }
 	                }
-	                String updateItemBtn = request.getParameter("updateItem");
-	                if(updateItemBtn != null){
-	                    ItemCounter book = new ItemCounter(request.getParameter("isbn"));
-	                    for(int i = 0; i < cart.size(); i++)
-	                    {
-	                        if(cart.get(i).isbn().equals(book.isbn()))
-	                        {
-	                            int itemquantity = Integer.parseInt(request.getParameter("item_quantity"));
-	                            cart.get(i).setQuantity(itemquantity);
-	
-	                        }
-	                    }
-	                }
+                    String sid = request.getParameter("id");
+                    if(sid != null){
+                        int id = Integer.parseInt(sid);
+                        int itemquantity = Integer.parseInt(request.getParameter("value"));
+                        cart.get(id).setQuantity(itemquantity);
+	                }else{ 
+                        out.println("null");
+                    }
+
 	                for(int i = 0; i < cart.size(); i++)
 	                {
                        	String b_isbn = cart.get(i).isbn().trim();
@@ -207,7 +203,7 @@
 							<input type="hidden" name="isbn" value=<% out.println(b_isbn); %> />
                             <td>
                                 <div class="input-field">
-                                    <select name="item_quantity" id="item<% out.print(i); %>">
+                                    <select name="item_quantity" id="<% out.print(i); %>">
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -224,7 +220,6 @@
 
 							<td>
 								<% 
-								out.println(cart.get(i).quantity());
 								itemCount +=cart.get(i).quantity(); 
 								%>
 							</td>
@@ -232,14 +227,10 @@
 									name="removeItem">
 									<i class="material-icons">delete_forever</i></a>
 								</button></td>
-							<td><button type="submit" class="btn-floating"
-									name="updateItem">
-									<i class="material-icons">cached</i></a>
-								</button></td>
 						</form>
                         <script>
                                 $(document).ready(function() {
-                                    $('#item<% out.print(i); %>').val(<% out.println(cart.get(i).quantity()); %>);
+                                    $('#<% out.print(i); %>').val(<% out.println(cart.get(i).quantity()); %>);
                                     $('select').material_select();
                                 });
                         </script>
@@ -323,8 +314,9 @@
                       $(document).ready(function(){
                             $('.modal').modal();
                             $('select').change(function () {
-
-                             });
+                                $(this).val()
+                                window.location.replace("./shoppingcart.jsp?page=1&orderby=title&reverse=false&total=1&value=" + $(this).val() + "&id=" + $(this).attr('id'));
+                            });
                       });
                 </script>
             </div>
