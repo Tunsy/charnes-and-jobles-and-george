@@ -17,6 +17,8 @@
 			<div class="col s10">
 				<%
                     int itemCount = 0;
+                    double cost = 0;
+                    double totalCost = 0;
                     try {               
                         //Class.forName("org.gjt.mm.mysql.Driver");
                         Connection c = DriverManager.getConnection(
@@ -194,7 +196,8 @@
                        		}
                			}
 
-                        double cost = 10 * cart.get(i).quantity();
+                        cost = 10 * cart.get(i).quantity();
+                        totalCost += cost;
                         out.println("</td> <td>$" + String.format("%.2f", cost) + "</td>");
                         
                        %>
@@ -264,15 +267,18 @@
 				<div class="summary pinned">
 					<h5>Summary</h5>
 					<div class="divider"></div>
-					<p>
-						Items:
+					<p> Items:
 						<% 
-                        out.print(itemCount); 
-                        out.print("</p><p>Total cost: " + (itemCount * 10.00) + "</p>");
-                    %>
+                            out.print(itemCount); 
+                            out.println("</p> <p>Total cost: $" + String.format("%.2f", totalCost) + "</p>");
+                         %>
 						<!-- Modal Trigger -->
-						<a class="waves-effect waves-light btn modal-trigger"
-							href="#checkoutModal">Checkout</a>
+						<a class="waves-effect waves-light btn modal-trigger" href="#checkoutModal">Checkout</a>
+                    <% 
+                        if(request.getParameter("invalid") != null && (request.getParameter("invalid").equals("true"))){
+                            out.print("<div class=\"card-panel red darken-2\">Invalid CCN!</div>");
+                        }
+                    %>
 				</div>
 
 				<!-- Modal Structure -->
@@ -282,33 +288,25 @@
 						<div class="modal-content">
 							<h4>Enter Payment Info</h4>
 							<div class="row">
-								<div class="input-field col s4">
+								<div class="input-field col s6">
 									<input id="firstname" type="text" name="firstname"
 										class="validate" required> <label for="firstname">First
 										name</label>
 								</div>
-								<div class="input-field col s4">
+								<div class="input-field col s6">
 									<input id="lastname" type="text" name="lastname"
 										class="validate" required> <label for="lastname">Last
 										name</label>
 								</div>
-								<div class="input-field col s4">
-									<input placeholder="panteater@uci.edu" id="email" type="text"
-										name="email" class="validate" required> <label for="email">Email</label>
-								</div>
 							</div>
 							<div class="row">
-								<div class="input-field col s4">
-									<input id="address" type="text" name="address" class="validate">
-									<label for="address" required>Address</label>
-								</div>
-								<div class="input-field col s4">
+								<div class="input-field col s6">
 									<input id="ccn" type="text" name="ccn" class="validate">
 									<label for="ccn" required>Credit Card Number</label>
 								</div>
-								<div class="input-field col s4">
+								<div class="input-field col s6">
 									<input id="expdate" type="text" name="expdate" class="validate">
-									<label for="expdate" required>Expiration Date (yy-mm-dd)</label>
+									<label for="expdate" required>Expiration Date (yyyy-mm-dd)</label>
 								</div>
 							</div>
 
@@ -325,8 +323,7 @@
                       $(document).ready(function(){
                             $('.modal').modal();
                             $('select').change(function () {
-                                $(document.body).append("hi");
-                                
+
                              });
                       });
                 </script>

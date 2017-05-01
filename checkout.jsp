@@ -66,7 +66,7 @@
 		}
 		else
 		{
-		 	out.println("Order Failed");
+		 	response.sendRedirect("http://localhost:8080/122b-second-coming/shoppingcart.jsp?page=1&orderby=title&reverse=false&total=10&invalid=true");
 		}
 	}
 	catch (Exception e){
