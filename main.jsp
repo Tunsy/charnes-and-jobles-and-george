@@ -33,7 +33,7 @@
                             <button class="btn waves-effect waves-light" type="submit">
                             	Search
                             </button>
-		                	<a href="advancedsearch.jsp" id="advancedsearch" style="margin-left: 900px; margin-right: 0px">Advanced Search</a>
+		                	<a href="advancedsearch.jsp" id="advancedsearch" style="margin-left: 800px; margin-right: 0px">Advanced Search</a>
                         </div>  
                     </form>
 

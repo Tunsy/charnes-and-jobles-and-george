@@ -115,6 +115,7 @@
 	                ArrayList<ItemCounter> cart = new ArrayList<ItemCounter>();
 	                cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
 	                
+                    String sid = request.getParameter("id");
 	                String removeItemBtn = request.getParameter("removeItem");
 	                if(removeItemBtn != null){
 	                    ItemCounter book = new ItemCounter(request.getParameter("isbn"));
@@ -126,15 +127,13 @@
 	                            cart.remove(i);
 	                        }
 	                    }
-	                }
-                    String sid = request.getParameter("id");
-                    if(sid != null){
+	                }else if(sid != null){
                         int id = Integer.parseInt(sid);
-                        int itemquantity = Integer.parseInt(request.getParameter("value"));
-                        cart.get(id).setQuantity(itemquantity);
-	                }else{ 
-                        out.println("null");
-                    }
+                        if(id >= 0){
+                            int itemquantity = Integer.parseInt(request.getParameter("value"));
+                            cart.get(id).setQuantity(itemquantity);
+                        }
+	                }
 
 	                for(int i = 0; i < cart.size(); i++)
 	                {
