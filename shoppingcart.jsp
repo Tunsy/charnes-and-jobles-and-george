@@ -134,7 +134,7 @@
                                 if(cart.get(i).isbn().equals(book.isbn()))
                                 {
                                     out.println("0");
-                                    int itemquantity = Integer.parseInt(request.getParameter("item_quantity"));
+                                    int itemquantity = 5;
                                     cart.get(i).setQuantity(itemquantity);
                                 }
                             }
@@ -197,21 +197,17 @@
                         		}
                 			}
                     	    
-                    	    out.println("</td><td>$10.00</td>");
+                            double cost = 10 * cart.get(i).quantity();
+                    	    out.println("</td> <td>$" + String.format("%.2f", cost) + "</td>");
                             %>
-                            <!--
-                            <script>
-                                $(document).ready(function() {
-                                    $('select').val(<% out.println(cart.get(i).quantity()); %>);
-                                    $('select').material_select();
-                                });
-                            </script>
-                            -->
+                            
+
+                            
                             <form action="shoppingcart.jsp?<% out.println(request.getQueryString()); %>" method="post">
                                <input type="hidden" name="isbn" value=<% out.println(b_isbn); %> /> 
-                               <!--<td>
+                               <td>
                                     <div class="input-field">
-                                        <select name="item_quantity">
+                                        <select name="item_quantity" id="item<% out.print(i); %>">
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -224,11 +220,20 @@
                                         </select>
                                         <label>Qty:</label>
                                     </div>
-                                </td>-->
-                                <td><% out.println(cart.get(i).quantity()); itemCount +=cart.get(i).quantity(); %></td>
+                                </td>
+                                <td><% out.println(cart.get(i).quantity()); itemCount += cart.get(i).quantity(); %></td>
                                 <td><button type="submit" class="btn-floating red" name="removeItem"><i class="material-icons">delete_forever</i></a></button></td>
-                                <td><button type="submit" class="btn-floating" name="updateItem"><i class="material-icons">cached</i></a></button></td>
+                                <td><button type="submit" class="btn-floating" name="updateItem" value="<% out.print(b_isbn); %>"><i class="material-icons">cached</i></a></button></td>
                             </form>
+                            <form>
+                            </form>
+
+                            <script>
+                                $(document).ready(function() {
+                                    $('#item<% out.print(i); %>').val(<% out.println(cart.get(i).quantity()); %>);
+                                    $('select').material_select();
+                                });
+                            </script>
 
                     <%
                         }
@@ -304,8 +309,11 @@
 
                 <script>
                       $(document).ready(function(){
-                        // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
-                        $('.modal').modal();
+                            $('.modal').modal();
+                            $('select').change(function () {
+                                $(document.body).append("hi");
+                                
+                             });
                       });
                 </script>
             </div>
