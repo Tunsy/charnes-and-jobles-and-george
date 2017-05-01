@@ -23,15 +23,11 @@
 				+ " values (?, ?, ?)";
 		PreparedStatement sale_statement = c.prepareStatement(query);
 		java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
-		out.println((int) session.getAttribute("customerID"));
-		out.println(date);
 		
 		for (int i = 0; i < cart.size(); i++){		
 			sale_statement.setInt(1, (int) session.getAttribute("customerID"));
 			sale_statement.setInt(2, Integer.parseInt(cart.get(i).isbn()));
 			sale_statement.setDate(3, date);
-			
-			out.println(cart.get(i).isbn());
 			
 			for (int j = 0; j < cart.get(i).quantity(); j++){
 				sale_statement.execute();

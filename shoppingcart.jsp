@@ -126,7 +126,6 @@
 	                    }
 	                }
 	                String updateItemBtn = request.getParameter("updateItem");
-	                out.println("Test updateItemBtn = " + updateItemBtn);
 	                if(updateItemBtn != null){
 	                    ItemCounter book = new ItemCounter(request.getParameter("isbn"));
 	                    for(int i = 0; i < cart.size(); i++)
@@ -306,6 +305,10 @@
 								<div class="input-field col s6">
 									<input id="ccn" type="text" name="ccn" class="validate">
 									<label for="ccn">Credit Card Number</label>
+								</div>
+								<div class="input-field col s7">
+									<input id="expdate" type="text" name="expdate" class="validate">
+									<label for="expdate">Expiration Date (yy-mm-dd)</label>
 								</div>
 							</div>
 
