@@ -11,6 +11,12 @@
 <%@include file="navbar.jsp"%>  
     <div class="container">
 		<div>
+            <%
+                if(request.getParameter("order") != null && request.getParameter("order").equals("true")){
+                    out.print("<div class=\"col s12 msg\"><div class=\"card-panel green lighten-1 col s4 center-align\">Your order has been placed!</div></div>");
+                }
+             %>
+
             <nav class="navcontainer">
                 <div class="nav-wrapper bluenav">
                     <form action="booklist.jsp" class="search-container center-align">

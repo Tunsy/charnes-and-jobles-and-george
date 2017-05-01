@@ -63,6 +63,7 @@
 			session.removeAttribute("shoppingcart");
 			session.setAttribute("shoppingcart", new ArrayList<ItemCounter>());
 			out.println("Order Successful");
+			response.sendRedirect("http://localhost:8080/122b-second-coming/main.jsp?order=true");
 		}
 		else
 		{
