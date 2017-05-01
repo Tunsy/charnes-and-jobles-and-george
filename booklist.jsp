@@ -378,7 +378,12 @@
 									if(cart.get(i).isbn().equals(book.isbn()))
 									{
 										duplicate = true;
-										cart.get(i).addQuantity(itemquantity);
+										if (cart.get(i).quantity() + itemquantity > 9) {	// Quantity limit = 9
+											cart.get(i).setQuantity(9);
+											out.println("Quantity limit 9 per book.");
+										}else{
+											cart.get(i).addQuantity(itemquantity);
+										}
 										break;
 									}
 								}
