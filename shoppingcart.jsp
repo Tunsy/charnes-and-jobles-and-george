@@ -110,7 +110,7 @@
                 ArrayList<ItemCounter> cart = new ArrayList<ItemCounter>();
                 cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
                 
-                out.println("2");
+                out.println("Test: 2");
                 String removeItemBtn = request.getParameter("removeItem");
                 if(removeItemBtn != null){
                     ItemCounter book = new ItemCounter(request.getParameter("isbn"));
@@ -131,7 +131,7 @@
                     {
                         if(cart.get(i).isbn().equals(book.isbn()))
                         {
-                            out.println("0");
+                            out.println("Test: 0");
                             int itemquantity = Integer.parseInt(request.getParameter("item_quantity"));
                             cart.get(i).setQuantity(itemquantity);
                         }
