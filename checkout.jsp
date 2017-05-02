@@ -63,11 +63,11 @@
 			session.removeAttribute("shoppingcart");
 			session.setAttribute("shoppingcart", new ArrayList<ItemCounter>());
 			out.println("Order Successful");
-			response.sendRedirect("http://localhost:8080/122b-second-coming/main.jsp?order=true");
+			response.sendRedirect("main.jsp?order=true");
 		}
 		else
 		{
-		 	response.sendRedirect("http://localhost:8080/122b-second-coming/shoppingcart.jsp?page=1&orderby=title&reverse=false&total=10&invalid=true");
+		 	response.sendRedirect("shoppingcart.jsp?page=1&orderby=title&reverse=false&total=10&invalid=true");
 		}
 	}
 	catch (Exception e){
