@@ -380,7 +380,7 @@
 										duplicate = true;
 										if (cart.get(i).quantity() + itemquantity > 9) {	// Quantity limit = 9
 											cart.get(i).setQuantity(9);
-											out.println("Quantity limit 9 per book.");
+											out.print("<div class=\"col s12 msg\"><div class=\"card-panel red darken-2 col s4 center-align\">Error: Quantity limit is 9!</div></div>");
 										}else{
 											cart.get(i).addQuantity(itemquantity);
 										}
