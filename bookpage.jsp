@@ -12,6 +12,42 @@
 <%@include file="navbar.jsp"%>
 <%@include file="css.html"%>
 <body>
+<%
+	String isbn = request.getParameter("b_isbn");
+	String btn = request.getParameter("btn");
+	if(btn != null) //btnSubmit is the name of your button, not id of that button.
+	{
+		
+		isbn = request.getParameter("btn").trim();	// Unique button value for each form
+		ArrayList<ItemCounter> cart = new ArrayList<ItemCounter>(); 
+		cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
+		boolean duplicate = false;
+		int itemquantity = Integer.parseInt(request.getParameter("item_quantity"));
+		ItemCounter book = new ItemCounter(btn);
+		for(int i = 0; i < cart.size(); i++)
+		{
+			if(cart.get(i).isbn().equals(book.isbn()))
+			{
+				duplicate = true;
+				if (cart.get(i).quantity() + itemquantity > 9) {	// Quantity limit = 9
+					cart.get(i).setQuantity(9);
+					out.print("<div class=\"col s12 msg\"><div class=\"card-panel red darken-2 col s4 center-align\">Error: Quantity limit is 9!</div></div>");
+				}else{
+					cart.get(i).addQuantity(itemquantity);
+				}
+				break;
+			}
+		}
+		
+		if(!duplicate)
+		{
+			book.setQuantity(itemquantity);
+			cart.add(book);
+		}
+	
+		btn = null;
+	}
+%>
 	<div class="container">
 		<div class="row">
 			<div class="col s8">
@@ -19,7 +55,7 @@
 					<%
                  
 					String qstring = request.getQueryString();
-                    String isbn = request.getParameter("b_isbn");
+                    isbn = request.getParameter("b_isbn");
 
                     try {               
                         //Class.forName("org.gjt.mm.mysql.Driver");
@@ -104,39 +140,6 @@
 					</script>
 
 					<%
-							String btn = request.getParameter("btn");
-							if(btn != null) //btnSubmit is the name of your button, not id of that button.
-							{
-								
-								isbn = request.getParameter("btn").trim();	// Unique button value for each form
-								ArrayList<ItemCounter> cart = new ArrayList<ItemCounter>(); 
-								cart = (ArrayList<ItemCounter>) session.getAttribute("shoppingcart");
-								boolean duplicate = false;
-								int itemquantity = Integer.parseInt(request.getParameter("item_quantity"));
-								ItemCounter book = new ItemCounter(btn);
-								for(int i = 0; i < cart.size(); i++)
-								{
-									if(cart.get(i).isbn().equals(book.isbn()))
-									{
-										duplicate = true;
-										if (cart.get(i).quantity() + itemquantity > 9) {	// Quantity limit = 9
-											cart.get(i).setQuantity(9);
-											out.println("Quantity limit 9 per book.");
-										}else{
-											cart.get(i).addQuantity(itemquantity);
-										}
-										break;
-									}
-								}
-								
-								if(!duplicate)
-								{
-									book.setQuantity(itemquantity);
-									cart.add(book);
-								}
-
-								btn = null;
-							}
 	                } 
 
                     } catch (SQLException ex) {
