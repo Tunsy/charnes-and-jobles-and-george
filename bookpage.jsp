@@ -9,8 +9,8 @@
  cart.ItemCounter"%>
 
 <html>
-<%@include file="navbar.jsp"%>
 <%@include file="css.html"%>
+<%@include file="navbar.jsp"%>
 <body>
 <%
 	String isbn = request.getParameter("b_isbn");
