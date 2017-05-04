@@ -7,6 +7,10 @@
 
 <html>
 <%@include file="css.html"%>
+	<head>
+		<script src='https://www.google.com/recaptcha/api.js'></script>
+		<title>Charnes & Jobles & George</title>
+	</head>
 	<body>
 	    <div class="container">
 	        <h1 align="center"> Charnes & Jobles & George</h1>

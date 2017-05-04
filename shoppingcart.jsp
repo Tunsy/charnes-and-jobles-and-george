@@ -10,8 +10,11 @@
 
 <html>
 <%@include file="css.html"%>
-<%@include file="navbar.jsp"%>
+<head>
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+</head>
 <body>
+  <%@include file="navbar.jsp"%>
 	<div class="container">
 		<div class="row">
 			<div class="col s10">
@@ -301,7 +304,6 @@
 									<label for="expdate" required>Expiration Date (yyyy-mm-dd)</label>
 								</div>
 							</div>
-
 						</div>
 						<div class="modal-footer">
 							<button class="btn waves-effect waves-light" type="submit"
@@ -310,6 +312,13 @@
 								class="modal-action modal-close waves-effect waves-green btn-flat">Back</a>
 						</div>
 					</form>
+          <% 
+            out.print("<form action=\"https://www.google.com/recaptcha/api/siteverify?secret=6LfxoB8UAAAAAF8uvb_hwdOtG4kfxXP_Yj8Mer7w&response=" + 
+              request.getParameter("g-recaptcha-response") + "\">");
+          %>
+          
+                <div class="g-recaptcha" data-sitekey="6LfxoB8UAAAAAIUJisvwlHEZ6CW9gHPnNgJzESES"></div>
+          </form>
 				</div>
                 <script>
                       $(document).ready(function(){

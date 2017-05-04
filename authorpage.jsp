@@ -8,8 +8,8 @@
 %>
 
 <html>
-<%@include file="navbar.jsp"%>
 <%@include file="css.html"%>  
+<%@include file="navbar.jsp"%>
   <body>
     <div class="container">
         <div class="row">
