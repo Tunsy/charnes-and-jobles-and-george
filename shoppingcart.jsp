@@ -129,7 +129,7 @@
 	                        {
 	                            cart.get(i).setQuantity(0);
 	                            cart.remove(i);
-	                            i--;
+	                            break;
 	                        }
 	                    }
 	                }else if(sid != null){
