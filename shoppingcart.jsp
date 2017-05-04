@@ -119,12 +119,14 @@
 	                String removeItemBtn = request.getParameter("removeItem");
 	                if(removeItemBtn != null){
 	                    ItemCounter book = new ItemCounter(request.getParameter("isbn"));
+	                    
 	                    for(int i = 0; i < cart.size(); i++)
 	                    {
-	                        if(cart.get(i).isbn().equals(book.isbn()))
+	                    	if(cart.get(i).isbn().trim().equals(book.isbn()))
 	                        {
 	                            cart.get(i).setQuantity(0);
 	                            cart.remove(i);
+	                            i--;
 	                        }
 	                    }
 	                }else if(sid != null){

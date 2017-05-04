@@ -13,7 +13,7 @@
 <%@include file="css.html"%>
 <body>
 <%
-	String isbn = request.getParameter("b_isbn");
+	String isbn = request.getParameter("b_isbn").trim();
 	String btn = request.getParameter("btn");
 	if(btn != null) //btnSubmit is the name of your button, not id of that button.
 	{
@@ -174,7 +174,7 @@
 						</select> <label>Qty:</label>
 					</div>
 					<button type="submit" class=" waves-effect waves-light btn"
-						name="btn" value="<% out.println(isbn);%>">
+						name="btn" value="<%out.println(isbn);%>">
 						<i class="material-icons left"> shopping_cart </i>
 						Add to Shopping
 						Cart
