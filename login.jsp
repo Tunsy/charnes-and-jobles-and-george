@@ -5,7 +5,10 @@
  javax.servlet.http.*,
  javax.servlet.*,
  java.util.*,
- cart.ItemCounter"%>
+ cart.ItemCounter,
+ verification.MyConstants,
+ verification.VerifyUtils
+"%>
 
 <h1 align="center">Charnes & Jobles & George</h1>
 
@@ -21,9 +24,18 @@
         String password = request.getParameter("password");
         session.setAttribute("email", email);
         
+        // Credential check
         if(email == null || password == null){
             request.setAttribute("login", -1);
         }
+		
+		// Verify CAPTCHA.
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        out.println(VerifyUtils.class.getProtectionDomain().getCodeSource().getLocation());
+
+		boolean valid = VerifyUtils.verify(gRecaptchaResponse);
+		
+		
 		
         ArrayList<ItemCounter> shoppingcartitems = new ArrayList<ItemCounter>();
         
@@ -54,6 +66,9 @@
 			if (!password.equals(rs.getString(2))){
 				request.setAttribute("login", "-1");
 				session.removeAttribute("email");
+			} // Robot check
+			else if (!valid){
+				request.setAttribute("login", "-2");
 			}
 			else{
             	request.setAttribute("login", "1");

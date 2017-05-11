@@ -15,7 +15,7 @@
 	    <div class="container">
 	        <h1 align="center"> Charnes & Jobles & George</h1>
 	        <div class="col s12 msg">
-	        <%
+	        <%      	
 	            if(request.getParameter("login") != null && request.getParameter("login").equals("-1")){
 	                out.print("<div class=\"card-panel red darken-2 center-align col s4\">Invalid login!</div>");
 	            }else if(request.getParameter("login") != null && request.getParameter("login").equals("0")){
@@ -23,6 +23,8 @@
 	                session.removeAttribute("email");
 	                session.removeAttribute("password");
 	                session.invalidate();
+	            }else if (request.getParameter("login") != null && request.getParameter("login").equals("-2")){
+	            	out.print("<div class=\"card-panel red darken-2 center-align col s4\">Robots not allowed!</div>");
 	            }
 	        %>
 	        </div>
@@ -41,6 +43,7 @@
 				</div>
 				<button class="btn waves-effect waves-light" type="submit" name="login">Login
 				</button>
+				<div class="g-recaptcha" data-sitekey="6Lf8ByAUAAAAAEmxMjdKh70v-UVOJyX-I5IwY-On"></div>
 			</center>
 	        </form>
 		</div>
