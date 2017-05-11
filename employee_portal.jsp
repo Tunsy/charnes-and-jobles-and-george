@@ -18,3 +18,11 @@
 		</form>
 	</div>
 </div>
+
+<%
+	if(request.getParameter("addAuthorBtn") != null)
+	{
+		
+	}
+%>
+
