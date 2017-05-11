@@ -62,8 +62,7 @@
                     <h5 align="center">Browse books by genre</h5>
                         <%
                         	try {
-								Connection c = DriverManager.getConnection(
-								session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
+								Connection c = (Connection) session.getAttribute("sqlConnection");
 								response.setContentType("text/html");               
 								Class.forName("com.mysql.jdbc.Driver").newInstance();
 								Statement statement = c.createStatement();
