@@ -12,7 +12,7 @@
 							<div class="row">
 								<div class="input-field col s6">
 									<input id="firstname" type="text" name="firstname"
-										class="validate" required> <label for="firstname">First
+										class="validate" default=""> <label for="firstname">First
 										name</label>
 								</div>
 								<div class="input-field col s6">
