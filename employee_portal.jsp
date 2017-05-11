@@ -1,4 +1,6 @@
 <%@include file="employee_navbar.jsp"%>
+<title>Employee Portal
+</title>
 
 <div class="container">
 	<div>

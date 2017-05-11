@@ -49,6 +49,7 @@
         session.setAttribute("sqlURL", loginUrl);
         Class.forName("com.mysql.jdbc.Driver").newInstance();       
         Connection c = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+        session.setAttribute("sqlConnection", c);
 		
         
         

@@ -17,9 +17,7 @@
 		<%
 	try {               
 	//Class.forName("org.gjt.mm.mysql.Driver");
-	Connection c = DriverManager.getConnection(
-		session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
-	response.setContentType("text/html");               
+	Connection c = (Connection) session.getAttribute("sqlConnection");               
 	Class.forName("com.mysql.jdbc.Driver").newInstance();
 	Statement statement = c.createStatement();
 	   // Order by chevrons (arrows)
