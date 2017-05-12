@@ -26,6 +26,18 @@ nav {
 	margin-left: 40px;
 }
 
+.text-xs-center {
+    text-align: center;
+}
+
+.g-recaptcha{
+	display: inline-block;
+}
+
+.login-button{
+	margin-top:15px;
+}
+
 .guided-search {
 	margin-top: 75px;
 }

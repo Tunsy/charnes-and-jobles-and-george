@@ -41,9 +41,11 @@
 						<label for="password">Password</label>
 					</div>
 				</div>
-				<button class="btn waves-effect waves-light" type="submit" name="login">Login
+				<div class="text-xs-center">
+					<div class="g-recaptcha" data-sitekey="6Lf8ByAUAAAAAEmxMjdKh70v-UVOJyX-I5IwY-On"></div>
+				</div>
+				<button class="btn waves-effect waves-light login-button" type="submit" name="login">Login
 				</button>
-				<div class="g-recaptcha" data-sitekey="6Lf8ByAUAAAAAEmxMjdKh70v-UVOJyX-I5IwY-On"></div>
 			</center>
 	        </form>
 		</div>
