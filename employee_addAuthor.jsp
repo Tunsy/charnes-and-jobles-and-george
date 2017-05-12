@@ -37,5 +37,6 @@
 								name="addAuthorBtn">Add</button>
 						</div>
 					</form>
+				</div>
 </body>
 </html>
