@@ -63,7 +63,12 @@ javax.servlet.*"%>
 			
 			addBookProc.setString(5, first_name);
 			addBookProc.setString(6, last_name);
-			addBookProc.setString(7, dob);
+			
+			if (dob == null || dob.equals(""))
+				addBookProc.setString(7, null);
+			else
+				addBookProc.setString(7, dob);
+			
 			addBookProc.setString(8, photo_url);
 			
 			addBookProc.setString(9, genre);

@@ -25,7 +25,7 @@
 										<label for="yearpublished" required>Year Published</label>
 									</div>
 									<div class="input-field col s6">
-										<input id="publisher" type="text" name="publisher" class="validate" required>
+										<input id="publisher" type="text" name="publisher" class="validate">
 										<label for="publisher" required>Publisher</label>
 									</div>
 								</div>
@@ -43,7 +43,7 @@
 							<div class="row">
 								<div class="input-field col s6">
 									<input id="firstname" type="text" name="firstname"
-										class="validate" default=""> <label for="firstname">First
+										class="validate" default="" required> <label for="firstname">First
 										name</label>
 								</div>
 								<div class="input-field col s6">
