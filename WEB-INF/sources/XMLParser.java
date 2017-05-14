@@ -74,8 +74,9 @@ public class DomParserExample {
             for(int i = 0 ; i < nl.getLength();i++) {
                 
                 //get the films element
-                Element books = (Element)nl.getElementsByTagName("films");
-                NodeList bookList = films.getElementsByTagName("film");
+                Element books = (Element) nl.item(i);
+                getElementsByTagName("films");
+                NodeList bookList = books.getElementsByTagName("film");
 
                 if (bookList != null){
                     for (int j = 0; j < bookList.getLength();j++){
@@ -104,8 +105,17 @@ public class DomParserExample {
         //title, year_published, publisher
         String title = getTextValue(book,"t");
         int isbn = name.hashCode();
-        String year_published = getIntValue(book,"Age");
+        String year_published = getIntValue(book,"year");
         String publisher = getTextValue(book, "studios");
+        Element genresElement = (Element) book.getElementsByTagName("cats");
+        NodeList genreList = genresElement.getElementsByTagName("cat");
+        ArrayList<String> genres = new ArrayList<String>();
+        if (genreList != null){
+            for (int i = 0; i < genreList.getLength(); i++){
+                String genre = genreList.get(i).getNodeValue();
+            }
+        }
+
         
         //Create a new Book with the value read from the xml nodes
         Book newBook = new Book(isbn, title, year_published, publisher);
