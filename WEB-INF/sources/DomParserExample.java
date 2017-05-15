@@ -2,6 +2,7 @@ package xmlparser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Hashtable;
@@ -18,22 +19,18 @@ import org.xml.sax.SAXException;
 public class DomParserExample {
 
     //No generics
-	Hashtable<Integer, Book> booksTable;
-    static List booksList;
-    static List keys;
-    static List authorsList;
-    static List castList;
+	static HashMap<Integer, Book> booksTable;
+    static HashMap<String, Author> authorsList;
+    static HashMap<String, Cast> castList;
     Document dom;
     
 
 
     public DomParserExample(){
         //create
-        booksTable = new Hashtable<Integer, Book>();
-        booksList = new ArrayList();
-        authorsList = new ArrayList();
-        castList = new ArrayList();
-        keys = new ArrayList();
+        booksTable = new HashMap<Integer, Book>();
+        authorsList = new HashMap<String, Author>();
+        castList = new HashMap<String, Cast>();
     }
     
     
@@ -84,8 +81,6 @@ public class DomParserExample {
                         book = getBook((Element) bookList.item(j));
                         //add it to table
                         booksTable.put(book.getIsbn(), book);
-                        keys.add(book.getIsbn());
-                        booksList.add(book);
                     }  
                 }
             }
@@ -109,7 +104,7 @@ public class DomParserExample {
                 	for(int j = 0; j < dirFilmsList.getLength(); j++){
                 		Element m = (Element) dirFilmsList.item(j);
                 		Cast c = getCast(m);
-                		castList.add(c);
+                		castList.put(c.getStageName(), c);
                 	}
                 }
             }
