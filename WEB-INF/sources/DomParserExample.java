@@ -24,7 +24,7 @@ public class DomParserExample {
     //No generics
 	static HashMap<String, Book> booksTable;		// key is fid
     static HashMap<String, Author> authorsTable;	// key is stagename
-    static HashSet<Cast> castTable;		// key is incremented integer
+    static HashMap<String, Cast> castTable;		// key is incremented integer
     static int authorID;
     static int isbnCounter;
     static Connection c;
@@ -36,7 +36,7 @@ public class DomParserExample {
         //create
         booksTable = new HashMap<String, Book>();
         authorsTable = new HashMap<String, Author>();
-        castTable = new HashSet<Cast>();
+        castTable = new HashMap<String, Cast>();
     }
     
     
@@ -115,8 +115,12 @@ public class DomParserExample {
                 	for(int j = 0; j < dirFilmsList.getLength(); j++){
                 		Element m = (Element) dirFilmsList.item(j);
                 		Cast c = getCast(m);
+
                 		if (c != null){
-                			castTable.add(c);
+                    		Cast dupeCheck = castTable.get(c.getStageName());
+                    		if(dupeCheck == null){
+                    			castTable.put(c.getStageName(), c);
+                    		}
                 		}
                 	}
                 }
@@ -361,10 +365,11 @@ public class DomParserExample {
         insertBookStatement.executeBatch();
         insertAuthorStatement.executeBatch();
         //c.commit();
-        it = castTable.iterator();
+        it = castTable.entrySet().iterator();
         Cast cast = null;
         while(it.hasNext()) {
-        	cast = (Cast) it.next();
+        	Map.Entry<String, Cast> _cast = (Map.Entry<String, Cast>) it.next();
+        	cast = _cast.getValue();
         	if (booksTable.get(cast.getFid()) == null){
         		System.out.println(cast.getFid() + " is not a valid fid, not added to authored table");
         		continue;
@@ -375,6 +380,7 @@ public class DomParserExample {
         	}
             insertAuthoredStatement.setInt(1, booksTable.get(cast.getFid()).getIsbn());
             insertAuthoredStatement.setInt(2, authorsTable.get(cast.getStageName()).getAuthorId());
+            
             insertAuthoredStatement.addBatch();
         }
     	insertAuthoredStatement.executeBatch();
