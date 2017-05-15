@@ -1,10 +1,13 @@
 package xmlparser;
 
 import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Hashtable;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -19,18 +22,21 @@ import org.xml.sax.SAXException;
 public class DomParserExample {
 
     //No generics
-	static HashMap<Integer, Book> booksTable;
-    static HashMap<String, Author> authorsList;
-    static HashMap<String, Cast> castList;
+	static HashMap<String, Book> booksTable;		// key is fid
+    static HashMap<String, Author> authorsTable;	// key is stagename
+    static HashSet<Cast> castTable;		// key is incremented integer
+    static int authorID;
+    static int isbnCounter;
+    static Connection c;
     Document dom;
     
 
 
     public DomParserExample(){
         //create
-        booksTable = new HashMap<Integer, Book>();
-        authorsList = new HashMap<String, Author>();
-        castList = new HashMap<String, Cast>();
+        booksTable = new HashMap<String, Book>();
+        authorsTable = new HashMap<String, Author>();
+        castTable = new HashSet<Cast>();
     }
     
     
@@ -57,7 +63,13 @@ public class DomParserExample {
     }
 
     
-    private void parseFilmDocument(){
+    private void parseFilmDocument() throws SQLException{
+    	String query = "SELECT isbn FROM book ORDER BY isbn DESC LIMIT 1";
+    	Statement statement = c.createStatement();
+    	ResultSet rs = statement.executeQuery(query);
+		rs.next();
+		isbnCounter = rs.getInt(1) + 1;	
+    	
         //get the root elememt
         Element docEle = dom.getDocumentElement(); // <movies>
         
@@ -80,7 +92,7 @@ public class DomParserExample {
                     	//Given a specific <film>, create a book object
                         book = getBook((Element) bookList.item(j));
                         //add it to table
-                        booksTable.put(book.getIsbn(), book);
+                        booksTable.put(book.getFid(), book);
                     }  
                 }
             }
@@ -90,7 +102,6 @@ public class DomParserExample {
     private void parseCastDocument(){
     	//get the root elememt
         Element docEle = dom.getDocumentElement(); // <movies>
-        
         //get a nodelist of <directorfilms> elements
         NodeList nl = docEle.getElementsByTagName("dirfilms");
         if(nl != null && nl.getLength() > 0) {
@@ -104,14 +115,22 @@ public class DomParserExample {
                 	for(int j = 0; j < dirFilmsList.getLength(); j++){
                 		Element m = (Element) dirFilmsList.item(j);
                 		Cast c = getCast(m);
-                		castList.put(c.getStageName(), c);
+                		if (c != null){
+                			castTable.add(c);
+                		}
                 	}
                 }
             }
         }
     }
     
-    private void parseActorDocument(){
+    private void parseActorDocument() throws SQLException{
+    	String query = "SELECT author_id FROM author ORDER BY author_id DESC LIMIT 1";
+    	Statement statement = c.createStatement();
+    	ResultSet rs = statement.executeQuery(query);
+		rs.next();
+		authorID = rs.getInt(1) + 1;		
+    	
         //get the root elememt
         Element docEle = dom.getDocumentElement(); // <actor>
         
@@ -123,7 +142,9 @@ public class DomParserExample {
                 //given a specific actor element
                 Element authorElement = (Element) nl.item(i);
                 Author author = getAuthor(authorElement);
-                authorsList.add(author);
+                if (author != null){
+                	authorsTable.put(author.getStageName(), author);
+                }
             }
         }
     }
@@ -143,11 +164,11 @@ public class DomParserExample {
     	String title = "";
     	
     	title = getTextValue(book,"t");
-        int isbn = Math.abs(title.hashCode() % 999999);
+        int isbn = isbnCounter++;
         
         // year_published
         int year_published = getIntValue(book, "year");	// -1 if improper format in XML
-        
+
         // publisher
         String publisher = "";
 
@@ -180,7 +201,9 @@ public class DomParserExample {
         // fid
         String fid = "";
         fid = getTextValue(book, "fid");
-        
+        if (fid != null){
+        	fid = fid.toLowerCase();
+        }
         //Create a new Book with the value read from the xml nodes
         Book newBook = new Book(isbn, title, year_published, publisher, genres, fid);
         
@@ -188,8 +211,11 @@ public class DomParserExample {
     }
     
     private Cast getCast(Element cast){
-    	String fid = getTextValue(cast, "f");
+    	String fid = getTextValue(cast, "f").toLowerCase();
     	String stageName = getTextValue(cast, "a");
+    	if (stageName.equals("s a") || stageName.equals("sa")){
+    		return null;
+    	}
     	Cast c = new Cast(fid, stageName);
     	return c;
     }
@@ -204,6 +230,11 @@ public class DomParserExample {
     	if(dobList != null && dobList.getLength() > 0){
     		dob = dobList.item(0).getTextContent();
     	}
+    	
+    	if (dob == null || dob == "" || dob.length() != 10){
+    		System.out.println("Invalid date format");
+    	}
+    	
     	String firstName = "";
     	String lastName = "";
     	String str = getTextValue(author, "stagename");
@@ -219,7 +250,8 @@ public class DomParserExample {
 		}
         
         //Create a new Book with the value read from the xml nodes
-        Author currentAuthor = new Author(dob, firstName, lastName, str);
+        Author currentAuthor = new Author(dob, firstName, lastName, str, authorID);
+        authorID++;
         return currentAuthor;
     }
 
@@ -258,6 +290,7 @@ public class DomParserExample {
     		num = Integer.parseInt(getTextValue(ele,tagName));
     	}catch(NumberFormatException e){
     		num = -1;
+    		System.out.println("Improper format for tag[" + tagName + "] in element" + ele);
     	}
     	return num;
     }
@@ -266,8 +299,8 @@ public class DomParserExample {
      * Iterate through the list and print the 
      * content to console
      */
-    private void printData(List list){
-        Iterator it = list.iterator();
+    private void printData(HashMap list){
+        Iterator it = list.entrySet().iterator();
         while(it.hasNext()) {
             System.out.println(it.next().toString());
         }
@@ -275,11 +308,83 @@ public class DomParserExample {
         
     }
 
+    private void insertToDatabase() throws SQLException {
+    	PreparedStatement insertBookStatement = null;
+    	String insertBookQuery = null;
+    	
+    	PreparedStatement insertAuthorStatement = null;
+    	String insertAuthorQuery = null;
+    	
+    	PreparedStatement insertAuthoredStatement = null;
+    	String insertAuthoredQuery = null;
+    	
+    	insertBookQuery = "INSERT INTO book (isbn, title, year_published, publisher) VALUES (?, ?, ?, ?)";
+    	insertAuthorQuery = "INSERT INTO author (author_id, first_name, last_name, dob, photo_url) VALUES (?, ?, ?, ?, ?)";
+    	insertAuthoredQuery = "INSERT INTO authored (isbn, author_id) VALUES (?, ?)";
+    	
+    	int[] iNoRows = null;
+    	c.setAutoCommit(false);
+    	insertBookStatement = c.prepareStatement(insertBookQuery);
+    	insertAuthorStatement = c.prepareStatement(insertAuthorQuery);
+    	insertAuthoredStatement = c.prepareStatement(insertAuthoredQuery);
+    	
+    	// setup book inserts
+    	Iterator it = booksTable.entrySet().iterator();
+    	Book book = null;
+        while(it.hasNext()) {
+        	Map.Entry<String, Book> _book = (Map.Entry<String, Book>) it.next();
+        	book = _book.getValue();
+            insertBookStatement.setInt(1, book.getIsbn());
+            insertBookStatement.setString(2, book.getTitle());
+            insertBookStatement.setInt(3, book.getYear_published());
+            insertBookStatement.setString(4, book.getPublisher());
+            insertBookStatement.addBatch();
+        }
+        it = authorsTable.entrySet().iterator();
+        Author author = null;
+        while(it.hasNext()) {
+        	Map.Entry<String, Author> _author = (Map.Entry<String, Author>) it.next();
+        	author = _author.getValue();
+            insertAuthorStatement.setInt(1, author.getAuthorId());
+            insertAuthorStatement.setString(2, author.getFirstName());
+            insertAuthorStatement.setString(3, author.getLastName());
+            if (author.getDob() == null || author.getDob() == "" || author.getDob().length() != 10){
+                insertAuthorStatement.setString(4, null);
+            }
+            else{
+            	insertAuthorStatement.setString(4, author.getDob());
+            }
+            insertAuthorStatement.setString(5, null);
+            insertAuthorStatement.addBatch();
+        }
+        
+        insertBookStatement.executeBatch();
+        insertAuthorStatement.executeBatch();
+        //c.commit();
+        it = castTable.iterator();
+        Cast cast = null;
+        while(it.hasNext()) {
+        	cast = (Cast) it.next();
+        	if (booksTable.get(cast.getFid()) == null){
+        		System.out.println(cast.getFid() + " is not a valid fid, not added to authored table");
+        		continue;
+        	}
+        	if (authorsTable.get(cast.getStageName()) == null){
+        		System.out.println(cast.getStageName() + " is not a valid stageName, not added to authored table");
+        		continue;
+        	}
+            insertAuthoredStatement.setInt(1, booksTable.get(cast.getFid()).getIsbn());
+            insertAuthoredStatement.setInt(2, authorsTable.get(cast.getStageName()).getAuthorId());
+            insertAuthoredStatement.addBatch();
+        }
+    	insertAuthoredStatement.executeBatch();
+    	c.commit();
+    }
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception{
         //create an instance
         DomParserExample dpe = new DomParserExample();
-        
+        connectSQL();
         
         //parse the xml file and get the dom object
         dpe.parseXmlFile("mains243.xml");
@@ -292,9 +397,24 @@ public class DomParserExample {
         dpe.parseCastDocument();
         
         //Iterate through the list and print the data
-        dpe.printData(booksList);
-        dpe.printData(authorsList);
-        dpe.printData(castList);
+       // dpe.printData(booksTable);
+        //dpe.printData(authorsTable);
+        //dpe.printData(castTable);
+        
+        // Insert to database
+        dpe.insertToDatabase();
+    }
+    
+    public static void connectSQL() throws Exception{
+    	String loginUser = "root";
+        String loginPasswd = "122b";
+        String loginUrl = "jdbc:mysql://localhost:3306/booksdb";
+        try {
+        	Class.forName("com.mysql.jdbc.Driver").newInstance();       
+			c = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
     }
 
 }
