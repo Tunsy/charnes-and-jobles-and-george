@@ -8,9 +8,9 @@ public class Book{
     private String title;
     private int year_published;
     private String publisher;
-    private ArrayList<String> genres = new ArrayList<String>();
+    private ArrayList<Genre> genres = new ArrayList<Genre>();
 
-    public Book(int _isbn, String _title, int _year_published, String _publisher, ArrayList<String> _genres, String _fid){
+    public Book(int _isbn, String _title, int _year_published, String _publisher, ArrayList<Genre> _genres, String _fid){
         isbn = _isbn;
         title = _title;
         year_published = _year_published;
@@ -35,7 +35,7 @@ public class Book{
     	return publisher;
     }
     
-    public ArrayList<String> getGenres(){
+    public ArrayList<Genre> getGenres(){
     	return genres;
     }
     
@@ -56,7 +56,7 @@ public class Book{
 		sb.append(", ");
 		sb.append("Genres:");
 		for (int i = 0; i < genres.size(); i++){
-			sb.append(genres.get(i) + ", ");
+			sb.append(genres.get(i).getGenre() + ", ");
 		}
 		sb.append("Fid:" + fid);
 		sb.append(", ");
