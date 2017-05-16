@@ -24,9 +24,11 @@ public class DomParserExample {
     //No generics
 	static HashMap<String, Book> booksTable;		// key is fid
     static HashMap<String, Author> authorsTable;	// key is stagename
-    static HashMap<String, Cast> castTable;		// key is incremented integer
+    static HashMap<String, ArrayList<Cast>> castTable;		// key is incremented integer
+    static HashMap<String, Genre>	genreTable			// key is genre name (<cat>)
     static int authorID;
     static int isbnCounter;
+    static int genreCounter;
     static Connection c;
     Document dom;
     
@@ -36,7 +38,7 @@ public class DomParserExample {
         //create
         booksTable = new HashMap<String, Book>();
         authorsTable = new HashMap<String, Author>();
-        castTable = new HashMap<String, Cast>();
+        castTable = new HashMap<String, ArrayList<Cast>>();
     }
     
     
@@ -70,6 +72,12 @@ public class DomParserExample {
 		rs.next();
 		isbnCounter = rs.getInt(1) + 1;	
     	
+    	String query = "SELECT id FROM genre ORDER BY id DESC LIMIT 1";
+    	Statement statement = c.createStatement();
+    	ResultSet rs = statement.executeQuery(query);
+		rs.next();
+		genreCounter = rs.getInt(1) + 1;
+		
         //get the root elememt
         Element docEle = dom.getDocumentElement(); // <movies>
         
@@ -117,10 +125,12 @@ public class DomParserExample {
                 		Cast c = getCast(m);
 
                 		if (c != null){
-                    		Cast dupeCheck = castTable.get(c.getStageName());
-                    		if(dupeCheck == null){
-                    			castTable.put(c.getStageName(), c);
-                    		}
+                			ArrayList<Cast> casts = castTable.get(c.getStageName());
+                			if (casts==null) {
+                			    casts = new ArrayList<Cast>();
+                			    castTable.put(c.getStageName(), casts);
+                			}
+                			casts.add(c);
                 		}
                 	}
                 }
@@ -160,7 +170,7 @@ public class DomParserExample {
      * @param empEl
      * @return
      */
-    private Book getBook(Element book) {    
+    private Book getBook(Element book) {
         //for each <film> element get text or int values of 
         //isbn, title, year_published, publisher <cat>
         
@@ -366,22 +376,24 @@ public class DomParserExample {
         insertAuthorStatement.executeBatch();
         //c.commit();
         it = castTable.entrySet().iterator();
-        Cast cast = null;
+        ArrayList<Cast> castList = null;
         while(it.hasNext()) {
-        	Map.Entry<String, Cast> _cast = (Map.Entry<String, Cast>) it.next();
-        	cast = _cast.getValue();
-        	if (booksTable.get(cast.getFid()) == null){
-        		System.out.println(cast.getFid() + " is not a valid fid, not added to authored table");
-        		continue;
+        	Map.Entry<String, ArrayList<Cast>> _cast = (Map.Entry<String, ArrayList<Cast>>) it.next();
+        	castList = _cast.getValue();
+        	for (Cast cast : castList){
+	        	if (booksTable.get(cast.getFid()) == null){
+	        		System.out.println(cast.getFid() + " is not a valid fid, not added to authored table");
+	        		continue;
+	        	}
+	        	if (authorsTable.get(cast.getStageName()) == null){
+	        		System.out.println(cast.getStageName() + " is not a valid stageName, not added to authored table");
+	        		continue;
+	        	}
+	            insertAuthoredStatement.setInt(1, booksTable.get(cast.getFid()).getIsbn());
+	            insertAuthoredStatement.setInt(2, authorsTable.get(cast.getStageName()).getAuthorId());
+	            
+	            insertAuthoredStatement.addBatch();
         	}
-        	if (authorsTable.get(cast.getStageName()) == null){
-        		System.out.println(cast.getStageName() + " is not a valid stageName, not added to authored table");
-        		continue;
-        	}
-            insertAuthoredStatement.setInt(1, booksTable.get(cast.getFid()).getIsbn());
-            insertAuthoredStatement.setInt(2, authorsTable.get(cast.getStageName()).getAuthorId());
-            
-            insertAuthoredStatement.addBatch();
         }
     	insertAuthoredStatement.executeBatch();
     	c.commit();
