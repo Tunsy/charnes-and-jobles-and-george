@@ -5,12 +5,14 @@ public class Author {
 	private String firstName;
 	private String lastName;
 	private String stageName;
+	private int authorId;
 	
-	public Author(String _dob, String _firstName, String _lastName, String _stageName){
+	public Author(String _dob, String _firstName, String _lastName, String _stageName, int _authorId){
 		this.dob = _dob;
 		this.firstName = _firstName;
 		this.lastName = _lastName;
 		this.stageName = _stageName;
+		this.authorId = _authorId;
 	}
 	
 	public String getDob(){
@@ -27,6 +29,10 @@ public class Author {
 	
 	public String getStageName(){
 		return stageName;
+	}
+	
+	public int getAuthorId(){
+		return authorId;
 	}
 	
 	public String toString(){
