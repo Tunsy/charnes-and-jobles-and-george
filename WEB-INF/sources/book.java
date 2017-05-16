@@ -4,19 +4,19 @@ import java.util.ArrayList;
 
 public class Book{
     private int isbn;
-    private String fid;
+    private String bid;
     private String title;
     private int year_published;
     private String publisher;
     private ArrayList<Genre> genres = new ArrayList<Genre>();
 
-    public Book(int _isbn, String _title, int _year_published, String _publisher, ArrayList<Genre> _genres, String _fid){
+    public Book(int _isbn, String _title, int _year_published, String _publisher, ArrayList<Genre> _genres, String _bid){
         isbn = _isbn;
         title = _title;
         year_published = _year_published;
         publisher = _publisher;
         genres = _genres;
-        fid = _fid;
+        bid = _bid;
     }
 
     public int getIsbn(){
@@ -39,8 +39,8 @@ public class Book{
     	return genres;
     }
     
-    public String getFid(){
-    	return fid;
+    public String getbid(){
+    	return bid;
     }
     
     public String toString() {
@@ -58,10 +58,36 @@ public class Book{
 		for (int i = 0; i < genres.size(); i++){
 			sb.append(genres.get(i).getGenre() + ", ");
 		}
-		sb.append("Fid:" + fid);
+		sb.append("bid:" + bid);
 		sb.append(", ");
 		sb.append(".");
 		
 		return sb.toString();
+	}
+    
+    @Override
+	public boolean equals(Object book){
+		if (book == null){
+			return false;
+		}
+		if (!Authored.class.isAssignableFrom(book.getClass())) {
+	        return false;
+	    }
+	    final Book other = (Book) book;
+	    if (this.bid != other.bid) {
+	        return false;
+	    }
+	    if (this.isbn != other.isbn) {
+	        return false;
+	    }
+	    
+	    return true;
+	}
+	@Override
+	public int hashCode() {
+	    int hash = 3;
+	    hash = 53 * hash + (this.bid != null ? this.bid.hashCode() : 0);
+	    hash = 53 * hash + isbn;
+	    return hash;
 	}
 }
