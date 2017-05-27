@@ -4,15 +4,15 @@ public class Author {
 	private String dob;
 	private String firstName;
 	private String lastName;
-	private String stageName;
-	private int authorID;
+	private String penName;
+	private int authorId;
 	
-	public Author(String _dob, String _firstName, String _lastName, String _stageName, int _authorID){
+	public Author(String _dob, String _firstName, String _lastName, String _penName, int _authorId){
 		this.dob = _dob;
 		this.firstName = _firstName;
 		this.lastName = _lastName;
-		this.stageName = _stageName;
-		this.authorID = _authorID;
+		this.penName = _penName;
+		this.authorId = _authorId;
 	}
 	
 	public String getDob(){
@@ -27,12 +27,12 @@ public class Author {
 		return lastName;
 	}
 	
-	public String getStageName(){
-		return stageName;
+	public String getPenName(){
+		return penName;
 	}
 	
 	public int getAuthorId(){
-		return authorID;
+		return authorId;
 	}
 	
 	public String toString(){
@@ -44,7 +44,7 @@ public class Author {
 		sb.append(", ");
 		sb.append("Last name:" + lastName);
 		sb.append(", ");
-		sb.append("Stage name:" + stageName);
+		sb.append("Stage name:" + penName);
 		sb.append(".");
 		return sb.toString();
 	}
