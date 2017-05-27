@@ -20,7 +20,7 @@ try {
 	
 	if (str != null && !str.equals("")){
 		String[] searchstrings = str.split("\\s+");
-		String query = "SELECT title FROM book WHERE MATCH (title) AGAINST (? IN BOOLEAN MODE) LIMIT 5;";
+		String query = "SELECT DISTINCT(title) FROM book WHERE MATCH (title) AGAINST (? IN BOOLEAN MODE) LIMIT 5;";
 		
 		//out.println(query);
 		PreparedStatement pstatement = c.prepareStatement(query);
