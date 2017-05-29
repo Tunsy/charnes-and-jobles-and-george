@@ -35,10 +35,19 @@ try {
 		pstatement.setString(1, input);
 		//out.println(pstatement);
 		ResultSet rs = pstatement.executeQuery();
+		String writeOutput = "";
+		
+		writeOutput += "[";
+		int count = 0;
 		while (rs.next()){
-		//	out.println(rs.getString(1) + "<br>");
-			out.println("<option value=\"" + rs.getString(1) + "\">" + rs.getString(1) + "</option>");	// <option value="rs.getString(1)">
-		}			
+			writeOutput += "\"" + rs.getString(1) + "\", ";
+			count++;
+		}
+		if (count != 0){
+			writeOutput = writeOutput.substring(0, writeOutput.length() - 2);
+		}
+		writeOutput += "]";
+		out.println(writeOutput);
 	}
 
 }catch (SQLException e){

@@ -19,58 +19,34 @@
 
 
 		<script language="javascript" type="text/javascript">
-			//Browser Support Code
-			function autocompletefunc(){
-				var ajaxRequest; // The variable that makes Ajax possible!
-				var querystring = "/122b-second-coming/autocomplete.jsp?searchstring=";
-				querystring = querystring.concat(document.searchbar.search.value);
-				querystring = querystring.replace(/\s/g, '+');
-				try {
-					// Opera 8.0+, Firefox, Safari
-					ajaxRequest = new XMLHttpRequest();
-				} catch (e) {
-					// Internet Explorer Browsers
-					try {
-						ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
-					} catch (e) {
-						try {
-							ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
-						} catch (e) {
-							// Something went wrong
-							alert("Your browser broke!");
-							return false;
-						}
-					}
-				}
-				// Create a function that will receive data sent from the server
-				ajaxRequest.onreadystatechange = function() {
-					if (ajaxRequest.readyState == 4) {
-						document.getElementById("autocompletebox").innerHTML = this.responseText;
-						//document.write(document.searchbar.search.value);
-						//document.write(querystring);
-						//document.write(this.responseText);
-						// modal with 5 rows.
-					}
-				};
-				ajaxRequest.open("POST", querystring, true);
-				ajaxRequest.send();
-			}
+			$(function() {
+				$("#search").autocomplete({
+					source: function (request, response) {
+				        jQuery.get("/122b-second-coming/autocomplete.jsp", {
+				           searchstring : request.term
+				        }, function (data) {
+				            response(JSON.parse(data));
+				        });
+				    },
+				    minLength: 1
+				});
+			});
 		</script>
 
 		<nav class="navcontainer">
 			<div class="nav-wrapper bluenav">
-				<form name="searchbar" action="booklist.jsp" class="search-container center-align">
-					<input type="hidden" name="page" value="1" />
-					<input type="hidden" name="orderby" value="title" />
-					<input type="hidden" name="reverse" value="false" />
-					<input type="hidden" name="total" value="10" />
+				<form name="searchbar" action="booklist.jsp"
+					class="search-container center-align">
+					<input type="hidden" name="page" value="1" /> <input type="hidden"
+						name="orderby" value="title" /> <input type="hidden"
+						name="reverse" value="false" /> <input type="hidden" name="total"
+						value="10" />
 					<div class="input-field">
-						<input list="autocompletebox" id="search" type="search" onInput="autocompletefunc()" name="title" required> <label
+						<input id="search" type="search" autocomplete="off" style="z-index:999;"
+							name="title" required> <label
 							class="label-icon" for="search"> <i
 							class="material-icons"> search </i>
 						</label> <i class="material-icons"> close </i>
-						<datalist id="autocompletebox">
-						</datalist>
 					</div>
 					<div id="searchBtn">
 						<button class="btn waves-effect waves-light" type="submit">
