@@ -33,7 +33,6 @@
     <servlet-name>TestServlet</servlet-name>
     <jsp-file>/index.jsp</jsp-file>
   </servlet>
-
   <servlet-mapping>
       <servlet-name>TestServlet</servlet-name>
       <url-pattern>/test/*</url-pattern>  
@@ -43,11 +42,18 @@
       <servlet-name>AndroidLogin</servlet-name>
           <servlet-class>AndroidLogin</servlet-class>
     </servlet>
-
-
   <servlet-mapping>
       <servlet-name>AndroidLogin</servlet-name>
           <url-pattern>/AndroidLogin</url-pattern>
+    </servlet-mapping>
+
+  <servlet>
+      <servlet-name>AndroidSearch</servlet-name>
+          <servlet-class>AndroidSearch</servlet-class>
+    </servlet>
+  <servlet-mapping>
+      <servlet-name>AndroidSearch</servlet-name>
+          <url-pattern>/AndroidSearch</url-pattern>
     </servlet-mapping>
 
 </web-app>
