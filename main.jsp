@@ -1,5 +1,4 @@
 <html>
-<%@include file="css.html"%>
 <%@page
 	import="java.sql.*,
  javax.sql.*,
@@ -7,8 +6,8 @@
  javax.servlet.http.*,
  javax.servlet.*,
  java.lang.Math"%>
-
-<%@include file="navbar.jsp"%>
+<%@include file="css.html" %>
+<%@include file="navbar.jsp" %>
 <div class="container">
 	<div>
 		<%
@@ -19,8 +18,9 @@
 
 
 		<script language="javascript" type="text/javascript">
-			$(function() {
-				$("#search").autocomplete({
+			var jqui = jQuery.noConflict();
+			jqui(function() {
+				jqui("#search").autocomplete({
 					source: function (request, response) {
 				        jQuery.get("/122b-second-coming/autocomplete.jsp", {
 				           searchstring : request.term
@@ -42,14 +42,14 @@
 						name="reverse" value="false" /> <input type="hidden" name="total"
 						value="10" />
 					<div class="input-field">
-						<input id="search" type="search" autocomplete="off" style="z-index:999;"
+						<input id="search" type="search" autocomplete="off"
 							name="title" required> <label
 							class="label-icon" for="search"> <i
 							class="material-icons"> search </i>
 						</label> <i class="material-icons"> close </i>
 					</div>
 					<div id="searchBtn">
-						<button class="btn waves-effect waves-light" opacity="0.99" type="submit">
+						<button class="btn waves-effect waves-light" type="submit">
 							Search</button>
 						<a href="advancedsearch.jsp" id="advancedsearch"
 							style="margin-left: 800px; margin-right: 0px">Advanced Search</a>
