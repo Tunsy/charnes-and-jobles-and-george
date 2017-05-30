@@ -49,7 +49,7 @@
 						</label> <i class="material-icons"> close </i>
 					</div>
 					<div id="searchBtn">
-						<button class="btn waves-effect waves-light" type="submit">
+						<button class="btn waves-effect waves-light" opacity="0.99" type="submit">
 							Search</button>
 						<a href="advancedsearch.jsp" id="advancedsearch"
 							style="margin-left: 800px; margin-right: 0px">Advanced Search</a>
