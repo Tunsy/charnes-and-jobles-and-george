@@ -16,11 +16,10 @@
                 }
              %>
 
-
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 		<script language="javascript" type="text/javascript">
-			var jqui = jQuery.noConflict();
-			jqui(function() {
-				jqui("#search").autocomplete({
+			$(function() {
+				$("#search").autocomplete({
 					source: function (request, response) {
 				        jQuery.get("/122b-second-coming/autocomplete.jsp", {
 				           searchstring : request.term

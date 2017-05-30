@@ -320,6 +320,7 @@
                 <div class="g-recaptcha" data-sitekey="6LfxoB8UAAAAAIUJisvwlHEZ6CW9gHPnNgJzESES"></div>
           </form>
 				</div>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
                 <script>
                       $(document).ready(function(){
                             $('.modal').modal();
