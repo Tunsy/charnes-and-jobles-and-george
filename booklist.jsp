@@ -13,6 +13,9 @@
 
 <%@include file="navbar.jsp"%>
 <body>
+	<dialog style="width: 820px;" id="window" onmouseleave="dialog.close()"> 
+    	<iframe style="width:800px;" id="bookpageframe" src=""></iframe>
+	</dialog> 
 	<div class="container">
 		<%
 	try {               
@@ -26,7 +29,7 @@
 	   String pageRefresher = "page=" + request.getParameter("page");
 	   qstring = qstring.replace(pageRefresher, "page=1");	// When sorting, forward to page 1
 %>
-		<table class="bordered">
+		<table id="tblMain" class="bordered">
 			<thead>
 				<tr>
 					<th style="width: 80px">ISBN <a
@@ -336,11 +339,13 @@
 	        			}
 	               		out.print("</td><td>");
 	%>
-			<script>
+			<script language="javascript" type="text/javascript">
 				$(document).ready(function() {
 					$('select').material_select();
+					
 				});
 			</script>
+			
 
 			<%              
 							out.println("<form ");
@@ -425,7 +430,7 @@
                 else{
                 	out.println("<div><p>Search found 0 results.</p></div>");
                 }
-
+               
             } catch (SQLException ex) {
                 while (ex != null) {
                     System.out.println("SQL Exception:  " + ex.getMessage());
@@ -440,7 +445,61 @@
             }
  
 %>
+		<script>
+		var tbl = document.getElementById("tblMain");
+		var dialog = document.getElementById('window'); 
+		var isbn = [];
+		var title = [] ;
+		var publisher = [];
+		var year = [];
+		var author = [];
+		var genre = [];
+		(function() {  
+			//tbl = document.getElementById("tblMain");
+	        if (tbl != null) {
+	            for (var i = 1; i < tbl.rows.length; i++) {
+	            		isbn.push(tbl.rows[i].cells[0].innerHTML);
+	            		title.push(tbl.rows[i].cells[1].innerHTML);
+	            		publisher.push(tbl.rows[i].cells[2].innerHTML);
+	            		year.push(tbl.rows[i].cells[3].innerHTML);
+	            		author.push(tbl.rows[i].cells[4].innerHTML);
+	            		genre.push(tbl.rows[i].cells[5].innerHTML);
+	            }
+            };     
+		})();   
 		
+		$.each(tbl.rows, function(){
+			var isbncell = this.cells[0];
+			var i = this.rowIndex
+			if(i != 0)
+			{	
+				this.cells[1].onmouseover = function(){
+					/* $("#isbn").text(isbn[i-1]);
+		        	$("#title").text(title[i-1]);
+		        	$("#publisher").text(publisher[i-1]);
+		        	$("#year").text(year[i-1]);
+		        	$("#author").text(author[i-1]);
+		        	$("#genre").text(genre[i-1]); */
+		        	$("#bookpageframe").attr("src", "popupBookPage.jsp?b_isbn=" + isbn[i-1]);;
+		        	dialog.show();
+		        	var target = $(this);
+		            $("#window").position({
+		               my: 'left',
+		               at: 'right',
+		               of: target
+		            });
+					//getval(isbncell);
+				};
+			}
+
+		});
+
+        function getval(cel) {
+        	var text = $(cel.innerHTML);
+            alert(cel.innerHTML);
+        }
+		</script>
 	</div>
+</div> 
 </body>
 </html>
