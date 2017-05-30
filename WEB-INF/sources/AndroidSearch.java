@@ -38,7 +38,7 @@ public class AndroidSearch extends HttpServlet {
 	  String str = request.getParameter("search").trim();
 	  if (str != null && !str.equals("")){
 			String[] searchstrings = str.split("\\s+");
-			String query = "SELECT DISTINCT(title) FROM book WHERE MATCH (title) AGAINST (? IN BOOLEAN MODE) LIMIT 5;";
+			String query = "SELECT DISTINCT(title) FROM book WHERE MATCH (title) AGAINST (? IN BOOLEAN MODE);";
 			
 			//out.println(query);
 			PreparedStatement pstatement = c.prepareStatement(query);
@@ -57,7 +57,7 @@ public class AndroidSearch extends HttpServlet {
 
 
 			String bookOutput = "";
-			bookOutput += "titles:[";
+			bookOutput += "[";
 	            
 	
 	       int count = 0;
