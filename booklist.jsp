@@ -13,7 +13,7 @@
 
 <%@include file="navbar.jsp"%>
 <body>
-	<dialog style="width: 830px;" id="window" onmouseleave="dialog.close()"> 
+	<dialog style="width: 820px;" id="window" onmouseleave="dialog.close()"> 
     	<iframe style="width:800px;" id="bookpageframe" src=""></iframe>
 	</dialog> 
 	<div class="container">
@@ -430,8 +430,7 @@
                 else{
                 	out.println("<div><p>Search found 0 results.</p></div>");
                 }
-                c.close();
-
+               
             } catch (SQLException ex) {
                 while (ex != null) {
                     System.out.println("SQL Exception:  " + ex.getMessage());
@@ -494,69 +493,12 @@
 			}
 
 		});
-		
-		function getTableData(){
-        	$("#isbn").text(isbn[i-1]);
-        	$("#title").text(title[i-1]);
-        	$("#publisher").text(publisher[i-1]);
-        	$("#year").text(year[i-1]);
-        	$("#author").text(author[i-1]); 
-        	getval(tbl.rows[i].cells[0]);
-        	dialog.show();
-      };
-		
-        $.fn.slideFadeToggle = function(easing, callback) {
-        	  return this.animate({ opacity: 'toggle', height: 'toggle' }, 'fast', easing, callback);
-        	};
-        	
-       	function deselect(e) {
-       		  $('.pop').slideFadeToggle(function() {
-       		    e.removeClass('selected');
-       		  });    
-       		}
- 
+
         function getval(cel) {
         	var text = $(cel.innerHTML);
             alert(cel.innerHTML);
         }
 		</script>
-		<script language="javascript" type="text/javascript">	
-				function displayBook(cel)
-				{
-					var html = cel.innerHTML;
-					
-					var childs = html.getElementById()
-					var ajaxRequest;  // The variable that makes Ajax possible!
-
-					try{
-						// Opera 8.0+, Firefox, Safari
-						ajaxRequest = new XMLHttpRequest();
-					} catch (e){
-						// Internet Explorer Browsers
-						try{
-							ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
-						} catch (e) {
-							try{
-								ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
-							} catch (e){
-								// Something went wrong
-								alert("Your browser broke!");
-								return false;
-							}
-						}
-					}
-					// Create a function that will receive data sent from the server
-					ajaxRequest.onreadystatechange = function(){
-						if(ajaxRequest.readyState == 4){
-							document.myForm.time.value = ajaxRequest.responseText;
-						}
-					}
-					ajaxRequest.open("GET", "/AjaxTest/servlet/AjaxTest", true);
-					ajaxRequest.send(null);
-					
-				}
-	                				
-			</script>
 	</div>
 </div> 
 </body>
