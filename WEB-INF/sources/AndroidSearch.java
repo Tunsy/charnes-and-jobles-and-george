@@ -18,35 +18,39 @@ public class AndroidSearch extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     try{
-      // Credential check
-      if(email == null || password == null){
-        request.setAttribute("login", -1);
-      }
+      String searchQuery = request.getParameter("search");
+      PrintWriter out = response.getWriter();
+      out.print("1");
 
       String loginUser = "root";
       String loginPasswd = "122b";
       String loginUrl = "jdbc:mysql://localhost:3306/booksdb";
       Class.forName("com.mysql.jdbc.Driver").newInstance();       
       Connection c = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);      
-      Statement statement = c.createStatement();  
+      String query = "SELECT * FROM book WHERE title = ?";
+      PreparedStatement statement = c.prepareStatement(query);
+      statement.setString(1, searchQuery);
+      ResultSet rs = statement.executeQuery();
+      out.print("2");
 
-      String title = request.getParameter("title");
-      String query = "SELECT * FROM book WHERE title = '" + title + "' ORDER BY " + orderby;
-      statement.executeQuery(query);
 
+      String bookOutput = "";
+      bookOutput += "[";
+            out.print("3");
 
-      if (!rs.isBeforeFirst()) {
-        request.setAttribute("login", "-1");
+      int count = 0;
+      while(rs.next()){
+          bookOutput += "\"" + rs.getString("title") + "\", ";
+          count++;
       }
-      else{
-        rs.next();
-        if (!password.equals(rs.getString(2))){
-          request.setAttribute("login", "-1");
-        }
-        else{
-          request.setAttribute("login", "1");
-        }
+      out.print("4");
+
+      if(count != 0){
+          bookOutput = bookOutput.substring(0, bookOutput.length() - 2);
       }
+      bookOutput += "]";
+      out.print(bookOutput);
+
     }catch(Exception err){
 
     }

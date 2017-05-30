@@ -18,6 +18,7 @@ public class AndroidLogin extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String email = request.getParameter("email");
     String password = request.getParameter("password");
+    PrintWriter out = response.getWriter();
 
     try{
       // Credential check
@@ -35,19 +36,23 @@ public class AndroidLogin extends HttpServlet {
       PreparedStatement statement = c.prepareStatement(query);
       statement.setString(1, email);
       ResultSet rs = statement.executeQuery();
+      out = response.getWriter();
 
-      if (!rs.isBeforeFirst()) {
-        request.setAttribute("login", "-1");
-      }
-      else{
-        rs.next();
+      if (rs.next())
+      {
+        String a_author_id = rs.getString("email");
+        String a_firstName = rs.getString("emailpw");
+
         if (!password.equals(rs.getString(2))){
-          request.setAttribute("login", "-1");
+          out.println("-1");
         }
         else{
-          request.setAttribute("login", "1");
+          out.println("1");
         }
+      }else{
+        out.println("-1");
       }
+      
     }catch(Exception err){
 
     }
