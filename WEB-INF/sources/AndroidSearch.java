@@ -18,38 +18,61 @@ public class AndroidSearch extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     try{
-      String searchQuery = request.getParameter("search");
-      PrintWriter out = response.getWriter();
-      out.print("1");
-
+    	
       String loginUser = "root";
-      String loginPasswd = "122b";
-      String loginUrl = "jdbc:mysql://localhost:3306/booksdb";
-      Class.forName("com.mysql.jdbc.Driver").newInstance();       
-      Connection c = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);      
-      String query = "SELECT * FROM book WHERE title = ?";
+	  String loginPasswd = "122b";
+	  String loginUrl = "jdbc:mysql://localhost:3306/booksdb";
+	  Class.forName("com.mysql.jdbc.Driver").newInstance();       
+	  Connection c = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);      
+	  PrintWriter out = response.getWriter();
+      
+    	//String searchQuery = request.getParameter("search").trim();
+      
+      
+      /*String query = "SELECT * FROM book WHERE title = ?";
       PreparedStatement statement = c.prepareStatement(query);
       statement.setString(1, searchQuery);
       ResultSet rs = statement.executeQuery();
-      out.print("2");
+      */
+	  
+	  String str = request.getParameter("search").trim();
+	  if (str != null && !str.equals("")){
+			String[] searchstrings = str.split("\\s+");
+			String query = "SELECT DISTINCT(title) FROM book WHERE MATCH (title) AGAINST (? IN BOOLEAN MODE) LIMIT 5;";
+			
+			//out.println(query);
+			PreparedStatement pstatement = c.prepareStatement(query);
+			
+			String input = "";
+			int searchstringIndex;
+			for (searchstringIndex = 0; searchstringIndex < searchstrings.length - 1; searchstringIndex++){
+				input += "+" + searchstrings[searchstringIndex] + " ";
+			}
+			input += "+" + searchstrings[searchstringIndex] + "*";
+			
+			pstatement.setString(1, input);
+			//out.println(pstatement);
+			ResultSet rs = pstatement.executeQuery();
+			String writeOutput = "";
 
 
-      String bookOutput = "";
-      bookOutput += "[";
-            out.print("3");
-
-      int count = 0;
-      while(rs.next()){
-          bookOutput += "\"" + rs.getString("title") + "\", ";
-          count++;
-      }
-      out.print("4");
-
-      if(count != 0){
-          bookOutput = bookOutput.substring(0, bookOutput.length() - 2);
-      }
-      bookOutput += "]";
-      out.print(bookOutput);
+			String bookOutput = "";
+			bookOutput += "titles:[";
+	            
+	
+	       int count = 0;
+	       while(rs.next()){
+	    	   bookOutput += "\"" + rs.getString("title") + "\", ";
+	    	   count++;
+	       }
+	       
+	
+	       if(count != 0){
+	    	   bookOutput = bookOutput.substring(0, bookOutput.length() - 2);
+	       }
+	       bookOutput += "]";
+	       out.print(bookOutput);
+	  }
 
     }catch(Exception err){
 
