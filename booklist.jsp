@@ -188,7 +188,7 @@
 						}
 						query += "title ";
 						if (title_fuzzy != null){	// Fuzzy search on title
-							query += "LIKE '%" + title + "%'";
+							query += "LIKE '%" + title + "%' OR edth(book.title, '" + title + "', 5) OR edrec(book.title, '" + title + "', 3) ";
 						}
 						else{						// Exact string matching on title
 							query += "= '" + title + "'";
@@ -208,7 +208,7 @@
 						}
 						query += "publisher ";
 						if (publisher_fuzzy != null){	// Fuzzy search on publisher
-							query += "LIKE '%" + publisher + "%'";
+							query += "LIKE '%" + publisher + "%' OR edth(book.publisher, '" + publisher + "', 5) OR edrec(book.publisher, '" + publisher + "', 3) ";
 						}
 						else{						// Exact string matching on publisher
 							query += "= '" + publisher + "'";
@@ -219,12 +219,12 @@
 						if (numQueryPredicates != 0){
 							query += " AND ";
 						}
-						query += "author.first_name ";
+						query += "(author.first_name ";
 						if (fname_fuzzy != null){	// Fuzzy search on first_name
-							query += "LIKE '%" + author_first_name + "%'";
+							query += "LIKE '%" + author_first_name + "%' OR edth(author.first_name, '" + author_first_name + "', 2)) ";
 						}
 						else{						// Exact string matching on first_name
-							query += "= '" + author_first_name + "'";
+							query += "= '" + author_first_name + "')";
 						}
 						numQueryPredicates++;
 					}
@@ -232,12 +232,12 @@
 						if (numQueryPredicates != 0){
 							query += " AND ";
 						}
-						query += "author.last_name ";
+						query += "(author.last_name ";
 						if (lname_fuzzy != null){	// Fuzzy search on last_name
-							query += "LIKE '%" + author_last_name + "%'";
+							query += "LIKE '%" + author_last_name + "%' OR edth(author.last_name, '" + author_last_name + "', 2)) ";
 						}
 						else{						// Exact string matching on last_name
-							query += "= '" + author_last_name + "'";
+							query += "= '" + author_last_name + "')";
 						}
 						numQueryPredicates++;
 					}
