@@ -118,6 +118,18 @@
 				String orderby = request.getParameter("orderby");
 				String letter = request.getParameter("letter");
 				String reverse = request.getParameter("reverse");
+			
+				// ADVANCED SEARCH
+				//String title = request.getParameter("title"); DUPLICATE VARIABLE
+				String year = request.getParameter("year");
+				String publisher = request.getParameter("publisher");
+				String author_first_name = request.getParameter("author_first_name");
+				String author_last_name = request.getParameter("author_last_name");
+				String title_fuzzy = request.getParameter("title_fuzzy_search");
+				String publisher_fuzzy = request.getParameter("publisher_fuzzy_search");
+				String fname_fuzzy = request.getParameter("first_name_fuzzy_search");
+				String lname_fuzzy = request.getParameter("last_name_fuzzy_search");
+				int numQueryPredicates = 0;
 				
 				if (advancedsearch == null){
 	         		// Search by title (first letter/all books)
@@ -132,10 +144,10 @@
 						    }
 						}else{
 						    if(orderby == null){
-						        query = "SELECT * from book " + "WHERE title LIKE \'" + letter + "%\'";
+						        query = "SELECT * from book " + "WHERE title LIKE ?";
 						    }
 						    else {
-								query = "SELECT * from book " + "WHERE title LIKE \'" + letter + "%\'" + " ORDER BY " + orderby;
+								query = "SELECT * from book " + "WHERE title LIKE ? ORDER BY " + orderby;
 							}    
 							if (reverse.equals("true")){
 								query += " DESC ";
@@ -151,7 +163,7 @@
 		         			query += " IS NULL ";
 		         		}
 		         		else{
-							query += " = '" + browsegenre + "' AND genre_in_books.genre_id = genre.id AND genre_in_books.isbn = book.isbn ";
+							query += " = ? AND genre_in_books.genre_id = genre.id AND genre_in_books.isbn = book.isbn ";
 		         		}
 						query += "ORDER BY " + orderby;		         			
 		         		if (reverse.equals("true")){
@@ -160,24 +172,14 @@
 					}
 		         	// Search by simple generic title match
 		         	else if (title != null && !title.equals("")){
-		         		query = "SELECT * FROM book WHERE title = '" + title + "' ORDER BY " + orderby;
+		         		query = "SELECT * FROM book WHERE title = ? ORDER BY " + orderby;
 		         		if (reverse.equals("true")){
 							query += " DESC ";
 						}
 		         	}
 				}
 				else{	// GENERATE ADVANCED SEARCH QUERY
-					//String title = request.getParameter("title"); DUPLICATE VARIABLE
-					String year = request.getParameter("year");
-					String publisher = request.getParameter("publisher");
-					String author_first_name = request.getParameter("author_first_name");
-					String author_last_name = request.getParameter("author_last_name");
-					String title_fuzzy = request.getParameter("title_fuzzy_search");
-					String publisher_fuzzy = request.getParameter("publisher_fuzzy_search");
-					String fname_fuzzy = request.getParameter("first_name_fuzzy_search");
-					String lname_fuzzy = request.getParameter("last_name_fuzzy_search");
-					
-					int numQueryPredicates = 0;
+					numQueryPredicates = 0;
 
 					query = "SELECT DISTINCT(book.isbn), book.title, book.year_published, book.publisher " +
 							"FROM book, author, authored " +
@@ -188,10 +190,10 @@
 						}
 						query += "title ";
 						if (title_fuzzy != null){	// Fuzzy search on title
-							query += "LIKE '%" + title + "%' OR edth(book.title, '" + title + "', 5) OR edrec(book.title, '" + title + "', 3) ";
+							query += "LIKE ? OR edth(book.title, ?, 5) OR edrec(book.title, ?, 3) ";
 						}
 						else{						// Exact string matching on title
-							query += "= '" + title + "'";
+							query += "= ?";
 						}
 						numQueryPredicates++;
 					}
@@ -199,7 +201,7 @@
 						if (numQueryPredicates != 0){
 							query += " AND ";
 						}
-						query += "year_published = " + year;
+						query += "year_published = ?";
 						numQueryPredicates++;
 					}
 					if (publisher != null && !publisher.equals("")){							
@@ -208,10 +210,10 @@
 						}
 						query += "publisher ";
 						if (publisher_fuzzy != null){	// Fuzzy search on publisher
-							query += "LIKE '%" + publisher + "%' OR edth(book.publisher, '" + publisher + "', 5) OR edrec(book.publisher, '" + publisher + "', 3) ";
+							query += "LIKE ? OR edth(book.publisher, ?, 5) OR edrec(book.publisher, ?, 3) ";
 						}
 						else{						// Exact string matching on publisher
-							query += "= '" + publisher + "'";
+							query += "= ?";
 						}
 						numQueryPredicates++;
 					}
@@ -221,10 +223,10 @@
 						}
 						query += "(author.first_name ";
 						if (fname_fuzzy != null){	// Fuzzy search on first_name
-							query += "LIKE '%" + author_first_name + "%' OR edth(author.first_name, '" + author_first_name + "', 2)) ";
+							query += "LIKE ? OR edth(author.first_name, ?, 2)) ";
 						}
 						else{						// Exact string matching on first_name
-							query += "= '" + author_first_name + "')";
+							query += "= ?)";
 						}
 						numQueryPredicates++;
 					}
@@ -234,10 +236,10 @@
 						}
 						query += "(author.last_name ";
 						if (lname_fuzzy != null){	// Fuzzy search on last_name
-							query += "LIKE '%" + author_last_name + "%' OR edth(author.last_name, '" + author_last_name + "', 2)) ";
+							query += "LIKE ? OR edth(author.last_name, ?, 2)) ";
 						}
 						else{						// Exact string matching on last_name
-							query += "= '" + author_last_name + "')";
+							query += "= ?)";
 						}
 						numQueryPredicates++;
 					}
@@ -272,14 +274,140 @@
                 	countQuery = query.replace("DISTINCT(book.isbn), book.title, book.year_published, book.publisher", "COUNT(DISTINCT(book.isbn)) AS total");
                 }
                 
-                rsCount = statement.executeQuery(countQuery);
+                PreparedStatement countStatement = c.prepareStatement(countQuery);
+                
+             // SET STRINGS FOR COUNT QUERY
+                if (advancedsearch == null){
+		         	if (letter != null && letter != ""){
+		          		if(!letter.equals("all")){
+							countStatement.setString(1, letter + "%"); // LIKE 'letter%'
+						}
+		         	}else if (browsegenre != null && !browsegenre.equals("")){
+		         		if (!browsegenre.equals("Genreless")){
+		         			countStatement.setString(1, browsegenre);
+		         		}
+					}
+		         	else if (title != null && !title.equals("")){
+		         		countStatement.setString(1, title);
+		         	}
+                }
+                else{	// ADVANCED SEARCH QUERY
+                	int paramCounter = 1;
+                	
+					if (title != null && !title.equals("")){							
+						if (title_fuzzy != null){	// Fuzzy search on title
+							countStatement.setString(paramCounter++, "%" + title + "%");
+							countStatement.setString(paramCounter++, title);
+							countStatement.setString(paramCounter++, title);
+						}
+						else{						// Exact string matching on title
+							countStatement.setString(paramCounter++, title);
+						}
+					}
+					if (year != null && !year.equals("")){						
+						countStatement.setString(paramCounter++, year);
+					}
+					if (publisher != null && !publisher.equals("")){
+						if (publisher_fuzzy != null){	// Fuzzy search on publisher
+							countStatement.setString(paramCounter++, "%" + publisher + "%");
+							countStatement.setString(paramCounter++, publisher);
+							countStatement.setString(paramCounter++, publisher);
+						}
+						else{						// Exact string matching on publisher
+							countStatement.setString(paramCounter++, publisher);
+						}
+					}
+					if (author_first_name != null && !author_first_name.equals("")){
+						if (fname_fuzzy != null){	// Fuzzy search on first_name
+							countStatement.setString(paramCounter++, "%" + author_first_name + "%");
+							countStatement.setString(paramCounter++, author_first_name);
+						}
+						else{						// Exact string matching on first_name
+							countStatement.setString(paramCounter++, author_first_name);
+						}
+					}
+					if (author_last_name != null && !author_last_name.equals("")){							
+						if (lname_fuzzy != null){	// Fuzzy search on last_name
+							countStatement.setString(paramCounter++, "%" + author_last_name + "%");
+							countStatement.setString(paramCounter++, author_last_name);
+						}
+						else{						// Exact string matching on last_name
+							countStatement.setString(paramCounter++, author_last_name);
+						}
+					}
+				}
+                rsCount = countStatement.executeQuery();
                 
                 if(rsCount.next()){
                     queryCount = rsCount.getInt("total");
                 }
                 if (queryCount != 0){
 	                query += " LIMIT " + (pageid - 1) + "," + total;
-	                rs = statement.executeQuery(query);
+	                
+	                PreparedStatement searchStatement = c.prepareStatement(query);
+	                
+	                // SET STRINGS FOR SEARCH QUERY
+	                if (advancedsearch == null){
+			         	if (letter != null && letter != ""){
+			          		if(!letter.equals("all")){
+								searchStatement.setString(1, letter + "%"); // LIKE 'letter%'
+							}
+			         	}else if (browsegenre != null && !browsegenre.equals("")){
+			         		if (!browsegenre.equals("Genreless")){
+			         			searchStatement.setString(1, browsegenre);
+			         		}
+						}
+			         	else if (title != null && !title.equals("")){
+			         		searchStatement.setString(1, title);
+			         	}
+	                }
+	                else{	// ADVANCED SEARCH QUERY
+	                	int paramCounter = 1;
+	                	
+						if (title != null && !title.equals("")){							
+							if (title_fuzzy != null){	// Fuzzy search on title
+								searchStatement.setString(paramCounter++, "%" + title + "%");
+								searchStatement.setString(paramCounter++, title);
+								searchStatement.setString(paramCounter++, title);
+							}
+							else{						// Exact string matching on title
+								searchStatement.setString(paramCounter++, title);
+							}
+						}
+						if (year != null && !year.equals("")){						
+							searchStatement.setString(paramCounter++, year);
+						}
+						if (publisher != null && !publisher.equals("")){
+							if (publisher_fuzzy != null){	// Fuzzy search on publisher
+								searchStatement.setString(paramCounter++, "%" + publisher + "%");
+								searchStatement.setString(paramCounter++, publisher);
+								searchStatement.setString(paramCounter++, publisher);
+							}
+							else{						// Exact string matching on publisher
+								searchStatement.setString(paramCounter++, publisher);
+							}
+						}
+						if (author_first_name != null && !author_first_name.equals("")){
+							if (fname_fuzzy != null){	// Fuzzy search on first_name
+								searchStatement.setString(paramCounter++, "%" + author_first_name + "%");
+								searchStatement.setString(paramCounter++, author_first_name);
+							}
+							else{						// Exact string matching on first_name
+								searchStatement.setString(paramCounter++, author_first_name);
+							}
+						}
+						if (author_last_name != null && !author_last_name.equals("")){							
+							if (lname_fuzzy != null){	// Fuzzy search on last_name
+								searchStatement.setString(paramCounter++, "%" + author_last_name + "%");
+								searchStatement.setString(paramCounter++, author_last_name);
+							}
+							else{						// Exact string matching on last_name
+								searchStatement.setString(paramCounter++, author_last_name);
+							}
+						}
+					}
+	                
+	                rs = searchStatement.executeQuery();
 	                
 	                String author_query = "SELECT author.author_id, author.first_name, author.last_name FROM authored, book, author WHERE book.isbn = ? AND book.isbn = authored.isbn AND author.author_id = authored.author_id ORDER BY last_name, first_name ASC";
 	                PreparedStatement author_statement = c.prepareStatement(author_query);
