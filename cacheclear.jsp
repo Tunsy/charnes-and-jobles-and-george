@@ -13,5 +13,8 @@
         String loginUrl = "jdbc:mysql://localhost:3306/booksdb";
 		response.sendRedirect("index.jsp");
 		
-	}*/
+	}
+	*/
+	session = request.getSession(false);
+
 %>
