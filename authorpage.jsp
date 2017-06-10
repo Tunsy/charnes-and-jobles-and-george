@@ -4,7 +4,8 @@
  javax.servlet.http.*,
  javax.servlet.*,
  java.lang.Math,
- java.util.*"
+ java.util.*,
+ javax.sql.DataSource"
 %>
 
 <html>
@@ -16,24 +17,31 @@
             <div class="col s8">
               <ul class="collection with-header">
                  <%
+                    Connection c = null;
                     try {               
                         //Class.forName("org.gjt.mm.mysql.Driver");
-                        Connection c = DriverManager.getConnection(
-                            session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
-                        response.setContentType("text/html");               
-                        Class.forName("com.mysql.jdbc.Driver").newInstance();
-                        Statement statement = c.createStatement();
 
-
+                        int pick = (int)(Math.random() % 2);
+                        if (pick == 0){
+                            c = ((DataSource) session.getAttribute("dsRead")).getConnection();
+                        }
+                        else{
+                            c = ((DataSource) session.getAttribute("dsWrite")).getConnection();
+                        }
+                        response.setContentType("text/html");
                         String authorid = request.getParameter("author_id");
-                        String author_query = "SELECT * FROM author WHERE author.author_id = " + authorid;
-                        ResultSet rs = statement.executeQuery(author_query);
+                        String author_query = "SELECT * FROM author WHERE author.author_id = ?";
+                        PreparedStatement statement = c.prepareStatement(author_query);
+                        statement.setInt(1, authorid);
+
+                        ResultSet rs = statement.executeQuery();
                         String name = "";
                         String birth = "";
                         String url = "";
                         
-                        String book_query = "SELECT * FROM authored,book WHERE authored.isbn = book.isbn AND authored.author_id = " + authorid + " ORDER BY book.title ASC";
+                        String book_query = "SELECT * FROM authored,book WHERE authored.isbn = book.isbn AND authored.author_id = ? ORDER BY book.title ASC";
                         PreparedStatement book_statement = c.prepareStatement(book_query);
+                        book_statement.setInt(1, authorid);
                         ResultSet books_rs = book_statement.executeQuery();
                         
                         if(rs.next()){
@@ -71,6 +79,9 @@
                                 + "<P>SQL error in doGet: " + ex.getMessage() + "</P></BODY></HTML>");
                         return;
                     }
+                    finally{
+                    c.close();
+                }
                   %>                   
               </ul>
             </div>

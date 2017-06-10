@@ -6,7 +6,8 @@
  javax.servlet.*,
  java.lang.Math,
  java.util.*,
- cart.ItemCounter"%>
+ cart.ItemCounter,
+ javax.sql.DataSource"%>
 
 <html>
 <%@include file="css.html"%>
@@ -18,11 +19,17 @@
 	</dialog> 
 	<div class="container">
 		<%
+            Connection c = null; 
 	try {               
 	//Class.forName("org.gjt.mm.mysql.Driver");
-	Connection c = (Connection) session.getAttribute("sqlConnection");               
-	Class.forName("com.mysql.jdbc.Driver").newInstance();
-	Statement statement = c.createStatement();
+
+	int pick = (int)(Math.random() % 2);
+    if (pick == 0){
+        c = ((DataSource) session.getAttribute("dsRead")).getConnection();
+    }
+    else{
+        c = ((DataSource) session.getAttribute("dsWrite")).getConnection();
+    }
 	   // Order by chevrons (arrows)
 	   String qstring = request.getQueryString();
 	   String replacer = "orderby=" + request.getParameter("orderby");
@@ -571,6 +578,9 @@
                         + "<P>SQL error in doGet: " + ex.getMessage() + "</P></BODY></HTML>");
                 return;
             }
+            finally{
+            c.close();
+        }
  
 %>
 		<script>

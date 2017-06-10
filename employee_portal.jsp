@@ -4,7 +4,8 @@ java.util.*,
 javax.sql.*,
 java.io.IOException,
 javax.servlet.http.*,
-javax.servlet.*"%>
+javax.servlet.*,
+javax.sql.DataSource"%>
 
 <%@include file="employee_navbar.jsp"%>
 
@@ -14,8 +15,7 @@ javax.servlet.*"%>
 	{
 		if(request.getParameter("addAuthorBtn") != null)
 		{
-			Class.forName("com.mysql.jdbc.Driver").newInstance(); 
-			Connection connection = (Connection) session.getAttribute("sqlConnection");
+			Connection connection = ((DataSource) session.getAttribute(dsWrite)).getConnection();
 			
 			String first_name = request.getParameter("firstname");
 			String last_name = request.getParameter("lastname");
@@ -33,13 +33,12 @@ javax.servlet.*"%>
 	
 			// execute the preparedstatement
 			preparedStmt.execute();
-			
+			connection.close();
 			out.print("<div class=\"card-panel green lighten-1 col s4 center-align\">Add Author Successful!</div>");
 		}
 		else if(request.getParameter("addBookBtn") != null)
 		{
-			Class.forName("com.mysql.jdbc.Driver").newInstance(); 
-			Connection connection = (Connection) session.getAttribute("sqlConnection");
+			Connection connection = ((DataSource) session.getAttribute(dsWrite)).getConnection();
 			
 			String storedProcedure = "{call add_book(?,?,?,?,?,?,?,?,?,?)}";
 			CallableStatement addBookProc = connection.prepareCall(storedProcedure);
@@ -75,6 +74,7 @@ javax.servlet.*"%>
 			addBookProc.registerOutParameter(10, java.sql.Types.VARCHAR);
 			
 			addBookProc.executeUpdate();
+			connection.close();
 			out.print("<div class=\"card-panel green lighten-1 col s4 center-align\">" + addBookProc.getString(10) + "</div>");
 		}
 	}

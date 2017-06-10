@@ -6,7 +6,8 @@
  javax.servlet.*,
  java.lang.Math,
  java.util.*,
- cart.ItemCounter"%>
+ cart.ItemCounter,
+ javax.sql.DataSource"%>
 
 <html>
 <%@include file="css.html"%>
@@ -22,13 +23,18 @@
                     int itemCount = 0;
                     double cost = 0;
                     double totalCost = 0;
+                    Connection c = null;
+
                     try {               
-                        //Class.forName("org.gjt.mm.mysql.Driver");
-                        Connection c = DriverManager.getConnection(
-                            session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
-                        response.setContentType("text/html");               
-                        Class.forName("com.mysql.jdbc.Driver").newInstance();
-                        Statement statement = c.createStatement();
+
+                        int pick = (int)(Math.random() % 2);
+                        if (pick == 0){
+                            c = ((DataSource) session.getAttribute("dsRead")).getConnection();
+                        }
+                        else{
+                            c = ((DataSource) session.getAttribute("dsWrite")).getConnection();
+                        }
+                        response.setContentType("text/html");
                         String qstring = request.getQueryString();
                         if (qstring.equals("")){
                         	qstring = "page=1&orderby=title&reverse=false&total=10";
@@ -252,6 +258,9 @@
                         out.println("<HTML>" + "<HEAD><TITLE>" + "BooksDB: Error" + "</TITLE></HEAD>\n<BODY>"
                                 + "<P>SQL error in doGet: " + ex.getClass().getSimpleName() + ex.getMessage() + "</P></BODY></HTML>");
                         return;
+                    }
+                    finally{
+                        c.close();
                     }
                 %>
 				</table>

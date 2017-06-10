@@ -6,15 +6,23 @@
  javax.servlet.*,
  java.lang.Math,
  java.util.*,
- cart.ItemCounter"%>
+ cart.ItemCounter,
+ javax.sql.DataSource"%>
  
 <%@include file="cacheclear.jsp"%>
 
 <%
+	Connection c = null;
 try {
-	Connection c = (Connection) session.getAttribute("sqlConnection");
+
+	int pick = (int)(Math.random() % 2);
+    if (pick == 0){
+        c = ((DataSource) session.getAttribute("dsRead")).getConnection();
+    }
+    else{
+        c = ((DataSource) session.getAttribute("dsWrite")).getConnection();
+    }
 	response.setContentType("text/html");               
-	Class.forName("com.mysql.jdbc.Driver").newInstance();
 	
 	String str = request.getParameter("searchstring").trim();
 	
@@ -51,6 +59,9 @@ try {
 	}
 
 }catch (SQLException e){
+}
+finally{
+	c.close();
 }
 
 %>

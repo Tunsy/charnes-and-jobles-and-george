@@ -6,7 +6,8 @@
  javax.servlet.*,
  java.lang.Math,
  java.util.*,
- cart.ItemCounter"%>
+ cart.ItemCounter,
+ javax.sql.DataSource"%>
 
 <html>
 <%@include file="css.html"%>
@@ -55,13 +56,18 @@
                  
 					String qstring = request.getQueryString();
                     isbn = request.getParameter("b_isbn");
-
+                        Connection c = null;
                     try {               
                         //Class.forName("org.gjt.mm.mysql.Driver");
-                        Connection c = DriverManager.getConnection(
-                            session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
+
+                        int pick = (int)(Math.random() % 2);
+                        if (pick == 0){
+                            c = ((DataSource) session.getAttribute("dsRead")).getConnection();
+                        }
+                        else{
+                            c = ((DataSource) session.getAttribute("dsWrite")).getConnection();
+                        }
                         response.setContentType("text/html");               
-                        Class.forName("com.mysql.jdbc.Driver").newInstance();
                         
                         //String isbn = "1";
                         String query = "SELECT * FROM book LEFT JOIN (author, authored, genre_in_books, genre) ON (book.isbn = authored.isbn AND authored.isbn = genre_in_books.isbn AND authored.author_id = author.author_id AND genre.id = genre_in_books.genre_id) WHERE book.isbn = ?";
@@ -154,6 +160,9 @@
                                 + "<P>SQL error in doGet: " + ex.getMessage() + "</P></BODY></HTML>");
                         return;
                     }
+                    finally{
+                    c.close();
+                }
 %>
 				</ul>
 				<form

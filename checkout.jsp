@@ -5,18 +5,26 @@
  javax.servlet.*,
  java.lang.Math,
  java.util.*,
- cart.ItemCounter"
+ cart.ItemCounter,
+ javax.sql.DataSource"
 %>
 
 <%@include file="css.html"%>
 <%@include file="navbar.jsp"%>
 <%
+		Connection c = null; 
 	try {
 		boolean validInfo = true; 
-		Connection c = DriverManager.getConnection(
-		session.getAttribute("sqlURL").toString(), session.getAttribute("sqlUser").toString(), session.getAttribute("sqlPassword").toString());
-		response.setContentType("text/html");               
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
+
+		int pick = (int)(Math.random() % 2);
+	    if (pick == 0){
+	        c = ((DataSource) session.getAttribute("dsRead")).getConnection();
+	    }
+	    else{
+	        c = ((DataSource) session.getAttribute("dsWrite")).getConnection();
+	    }
+		response.setContentType("text/html");
+		Connection cw = ((DataSource) session.getAttribute("dsWrite")).getConnection();
 		
 		
 		String ccQuery = "SELECT * FROM creditcards WHERE id = ? AND first_name = ? AND last_name = ? AND expiration = ?";
@@ -47,7 +55,7 @@
 		
 		String query = "INSERT INTO sales (customer_id, isbn, sale_date)"
 				+ " values (?, ?, ?)";
-		PreparedStatement sale_statement = c.prepareStatement(query);
+		PreparedStatement sale_statement = cw.prepareStatement(query);
 		java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
 		if(validInfo == true)
 		{
@@ -73,4 +81,8 @@
 	catch (Exception e){
 		
 	}
+	finally{
+	c.close();
+	cw.close();
+}
 %>

@@ -1,5 +1,5 @@
 <%@page
-	import="java.sql.*,
+    import="java.sql.*,
  javax.sql.*,
  java.io.IOException,
  javax.servlet.http.*,
@@ -7,7 +7,10 @@
  java.util.*,
  cart.ItemCounter,
  verification.MyConstants,
- verification.VerifyUtils
+ verification.VerifyUtils,
+ javax.naming.InitialContext,
+ javax.naming.Context,
+ javax.sql.DataSource
 "%>
 
 <h1 align="center">Charnes & Jobles & George</h1>
@@ -28,15 +31,15 @@
         if(email == null || password == null){
             request.setAttribute("login", -1);
         }
-		
-		// Verify CAPTCHA.
+        
+        // Verify CAPTCHA.
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
         out.println(VerifyUtils.class.getProtectionDomain().getCodeSource().getLocation());
 
-		boolean valid = VerifyUtils.verify(gRecaptchaResponse);
-		
-		
-		
+        boolean valid = VerifyUtils.verify(gRecaptchaResponse);
+        
+        
+        
         ArrayList<ItemCounter> shoppingcartitems = new ArrayList<ItemCounter>();
         
         session.setAttribute("shoppingcart", shoppingcartitems);
@@ -47,10 +50,24 @@
         session.setAttribute("sqlUser", loginUser);
         session.setAttribute("sqlPassword", loginPasswd);
         session.setAttribute("sqlURL", loginUrl);
-        Class.forName("com.mysql.jdbc.Driver").newInstance();       
-        Connection c = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+
+        Context initialContext = new InitialContext();         
+        Context envContext = (Context) initialContext.lookup("java:comp/env");
+        int pick = (int)(Math.random() % 2);
+        DataSource dsRead = (DataSource) envContext.lookup("jdbc/read");
+        DataSource dsWrite = (DataSource) envContext.lookup("jdbc/write");
+        Connection c;
+
+        if (pick == 0){
+            c = dsRead.getConnection();
+        }
+        else{
+            c = dsWrite.getConnection();
+        }
+        session.setAttribute("dsRead", dsRead);
+        session.setAttribute("dsWrite", dsWrite);
         session.setAttribute("sqlConnection", c);
-		
+        
         
         
         String query = "SELECT email, emailpw, id FROM customers WHERE customers.email = ?";
@@ -63,24 +80,24 @@
             session.removeAttribute("email");
         }
         else{
-      		rs.next();
-			if (!password.equals(rs.getString(2))){
-				request.setAttribute("login", "-1");
-				session.removeAttribute("email");
-			} // Robot check
-			else if (!valid){
-				request.setAttribute("login", "-2");
-			}
-			else{
-            	request.setAttribute("login", "1");
-            	session.setAttribute("customerID", rs.getInt(3));
-			}
+            rs.next();
+            if (!password.equals(rs.getString(2))){
+                request.setAttribute("login", "-1");
+                session.removeAttribute("email");
+            } // Robot check
+            else if (!valid){
+                request.setAttribute("login", "-2");
+            }
+            else{
+                request.setAttribute("login", "1");
+                session.setAttribute("customerID", rs.getInt(3));
+            }
         }
     }
     
 
     if(request.getAttribute("login") != null && request.getAttribute("login").equals("1")){
-    	response.sendRedirect("main.jsp");
+        response.sendRedirect("main.jsp");
     }else{
         response.sendRedirect("index.jsp?login=" + request.getAttribute("login"));
     }

@@ -4,14 +4,22 @@ javax.sql.*,
 java.io.IOException,
 javax.servlet.http.*,
 javax.servlet.*,
-java.lang.Math"
+java.lang.Math,
+javax.sql.DataSource"
 %>
 
 <%@include file="employee_navbar.jsp"%>
 
 <%
 		List<String> tableNames = new ArrayList<>();
-		Connection connection = (Connection) session.getAttribute("sqlConnection");
+		Connection connection = null;
+        int pick = (int)(Math.random() % 2);
+        if (pick == 0){
+            connection = ((DataSource) session.getAttribute("dsRead")).getConnection();
+        }
+        else{
+            connection = ((DataSource) session.getAttribute("dsWrite")).getConnection();
+        }
 		DatabaseMetaData md = connection.getMetaData();
 		ResultSet rs = md.getTables(null, null, "%", null);
 		while (rs.next()) {
@@ -20,8 +28,8 @@ java.lang.Math"
 		
 		
 		for (int i = 0; i < tableNames.size(); i++) {
-			Statement statement = connection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT * FROM " + tableNames.get(i));
+			PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + tableNames.get(i));
+			ResultSet results = statement.executeQuery();
 
 			// Get metadata from stars; print # of attributes in table
 			ResultSetMetaData metadatas = results.getMetaData();
@@ -44,4 +52,5 @@ java.lang.Math"
 			out.println("</table>");
 			out.println("<br>");
 		}
+		connection.close();
 %>

@@ -4,7 +4,10 @@
  java.io.IOException,
  javax.servlet.http.*,
  javax.servlet.*,
- java.util.*
+ java.util.*,
+ javax.naming.InitialContext,
+ javax.naming.Context,
+ javax.sql.DataSource
 "%>
 
 <h1 align="center">Employee Dashboard</h1>
@@ -32,8 +35,20 @@
         session.setAttribute("sqlUser", loginUser);
         session.setAttribute("sqlPassword", loginPasswd);
         session.setAttribute("sqlURL", loginUrl);
-        Class.forName("com.mysql.jdbc.Driver").newInstance();       
-        Connection c = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+        Context initialContext = new InitialContext();         
+        Context envContext = (Context) initialContext.lookup("java:comp/env");
+        DataSource dsRead = (DataSource) envContext.lookup("jdbc/read");
+        DataSource dsWrite = (DataSource) envContext.lookup("jdbc/write");
+        Connection c;
+        int pick = (int)(Math.random() % 2);
+        if (pick == 0){
+            c = dsRead.getConnection();
+        }
+        else{
+            c = dsWrite.getConnection();
+        }
+        session.setAttribute("dsRead", dsRead);
+        session.setAttribute("dsWrite", dsWrite);
         session.setAttribute("sqlConnection", c);
 		       
         String query = "SELECT email, pw, fullname FROM employee WHERE employee.email = ?";

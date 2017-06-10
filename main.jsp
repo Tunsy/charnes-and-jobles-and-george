@@ -5,7 +5,8 @@
  java.io.IOException,
  javax.servlet.http.*,
  javax.servlet.*,
- java.lang.Math"%>
+ java.lang.Math,
+ javax.sql.DataSource"%>
 <%@include file="css.html" %>
 <%@include file="navbar.jsp" %>
 <div class="container">
@@ -73,14 +74,19 @@
 			<div class="genre-search">
 				<h5 align="center">Browse books by genre</h5>
 				<%
+							Connection c = null;
                         	try {
-								Connection c = (Connection) session.getAttribute("sqlConnection");
+								int pick = (int)(Math.random() % 2);
+		                        if (pick == 0){
+		                            c = ((DataSource) session.getAttribute("dsRead")).getConnection();
+		                        }
+		                        else{
+		                            c = ((DataSource) session.getAttribute("dsWrite")).getConnection();
+		                        }
 								response.setContentType("text/html");               
-								Class.forName("com.mysql.jdbc.Driver").newInstance();
-								Statement statement = c.createStatement();
-							
 								String genreQuery = "SELECT genre_name FROM genre ORDER BY genre_name ASC";
-								ResultSet genres = statement.executeQuery(genreQuery);
+								PreparedStatement statement = c.prepareStatement(genreQuery);
+								ResultSet genres = statement.executeQuery();
 						%>
 				<form action="booklist.jsp">
 					<input type="hidden" name="page" value="1" /> <input type="hidden"
@@ -96,6 +102,9 @@
                         	catch (NullPointerException ex){
                         		
                         	}
+                        	finally{
+                        	c.close();
+                        }
                         %>
 				</form>
 			</div>
