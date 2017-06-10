@@ -53,11 +53,11 @@
 
         Context initialContext = new InitialContext();         
         Context envContext = (Context) initialContext.lookup("java:comp/env");
-        int pick = (int)(Math.random() % 2);
         DataSource dsRead = (DataSource) envContext.lookup("jdbc/read");
         DataSource dsWrite = (DataSource) envContext.lookup("jdbc/write");
         Connection c;
-
+        
+        int pick = (int)(Math.random() % 2);
         if (pick == 0){
             c = dsRead.getConnection();
         }
