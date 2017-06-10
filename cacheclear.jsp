@@ -1,5 +1,5 @@
 <%
-	response.setHeader("Cache-Control","no-cache");
+	/*response.setHeader("Cache-Control","no-cache");
 	response.setHeader("Cache-Control","no-store");
 	response.setHeader("Pragma","no-cache");
 	response.setDateHeader ("Expires", 0);
@@ -12,7 +12,6 @@
         String loginPasswd = "122b";
         String loginUrl = "jdbc:mysql://localhost:3306/booksdb";
 		response.sendRedirect("index.jsp");
-		/* RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
-        rd.forward(request, response); */
-	}
+		
+	}*/
 %>
