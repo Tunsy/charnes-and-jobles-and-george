@@ -103,7 +103,8 @@
                         		
                         	}
                         	finally{
-                        	c.close();
+                        	if (c != null)
+                        		c.close();
                         }
                         %>
 				</form>

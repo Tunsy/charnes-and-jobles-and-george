@@ -590,7 +590,8 @@
                 return;
             }
             finally{
-            c.close();
+            if (c != null)
+                c.close();
             long elapsedServletTime = System.nanoTime() - startServletTime;
             System.out.println("Search servlet execution time: " + elapsedServletTime / 1000000.0);
             System.out.println("JDBC execution time: " + elapsedJDBCTime / 1000000.0);
