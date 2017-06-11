@@ -5,6 +5,7 @@
  javax.servlet.http.*,
  javax.servlet.*,
  java.lang.Math,
+ java.lang.System,
  java.util.*,
  cart.ItemCounter,
  javax.sql.DataSource"%>
@@ -18,18 +19,26 @@
     	<iframe style="width:800px;" id="bookpageframe" src=""></iframe>
 	</dialog> 
 	<div class="container">
-		<%
+		<% 
+            long startServletTime = System.nanoTime();
+            long startJDBCTime;
+            long endJDBCTime;
+            long elapsedJDBCTime = 0;
+            startJDBCTime = System.nanoTime();
             Connection c = null; 
 	try {               
 	//Class.forName("org.gjt.mm.mysql.Driver");
 
-	int pick = (int)(Math.random() % 2);
-    if (pick == 0){
-        c = ((DataSource) session.getAttribute("dsRead")).getConnection();
-    }
-    else{
-        c = ((DataSource) session.getAttribute("dsWrite")).getConnection();
-    }
+        int pick = (int)(Math.random() % 2);
+        if (pick == 0){
+            c = ((DataSource) session.getAttribute("dsRead")).getConnection();
+        }
+        else{
+            c = ((DataSource) session.getAttribute("dsWrite")).getConnection();
+        }
+
+        endJDBCTime = System.nanoTime();
+        elapsedJDBCTime += (endJDBCTime - startJDBCTime);
 	   // Order by chevrons (arrows)
 	   String qstring = request.getQueryString();
 	   String replacer = "orderby=" + request.getParameter("orderby");
@@ -280,7 +289,7 @@
                 else{
                 	countQuery = query.replace("DISTINCT(book.isbn), book.title, book.year_published, book.publisher", "COUNT(DISTINCT(book.isbn)) AS total");
                 }
-                
+                startJDBCTime = System.nanoTime();
                 PreparedStatement countStatement = c.prepareStatement(countQuery);
                 
              // SET STRINGS FOR COUNT QUERY
@@ -535,6 +544,8 @@
 								btn = null;
 							}
 	                }
+                    endJDBCTime = System.nanoTime();
+                    elapsedJDBCTime += (endJDBCTime - startJDBCTime);
 	                out.println("</TABLE>");
 	                //Limit data
 					String formatTotal = "total=" + request.getParameter("total");
@@ -580,6 +591,9 @@
             }
             finally{
             c.close();
+            System elapsedServletTime = System.nanoTime() - startServletTime;
+            System.out.println("Search servlet execution time: " + elapsedServletTime * 1000000);
+            System.out.println("JDBC execution time: " + elapsedJDBCTime * 1000000);
         }
  
 %>
